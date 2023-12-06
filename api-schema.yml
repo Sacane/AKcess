@@ -1,16 +1,3 @@
-# Akcess
-
-## Contributors
-
-- Johan "Sacane" Ramaroson Rakotomihamina
-- Mathis "Verestah" Menaa
-- Yohann "Haine" Regueme
-- Quentin "qtdrake" Tellier
-- Omairt Kamdom
-
-
-## Swagger editor
-```yml
 openapi: 3.0.3
 info:
   title: Akcess - Rest documentation 0.1.0
@@ -692,4 +679,3 @@ components:
       type: apiKey
       name: Authorization
       in: header
-```
