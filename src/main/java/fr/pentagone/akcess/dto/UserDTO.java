@@ -1,4 +1,4 @@
-package fr.pentagone.akcess.infrastructure.api.dto;
+package fr.pentagone.akcess.dto;
 
 public record UserDTO(String username, int age) {
 }

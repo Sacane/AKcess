@@ -1,6 +1,6 @@
-package fr.pentagone.akcess.infrastructure.api;
+package fr.pentagone.akcess.controller;
 
-import fr.pentagone.akcess.infrastructure.api.dto.UserDTO;
+import fr.pentagone.akcess.dto.UserDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
