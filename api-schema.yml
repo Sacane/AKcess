@@ -22,6 +22,8 @@ tags:
     description: A couple of credentials login and password used to represent a manager of the Akcess server
   - name: info
     description: Global informations of the current Akcess server
+  - name: Role
+    description: Role aims to identify the user, application or manager's rights
 paths:
   /application:
     get:
@@ -401,7 +403,7 @@ paths:
   /role/{roleId}:
     get:
       tags:
-        - role
+        - Role
       summary: find role by ID
       description: Returns informations of a role
       operationId: getRole
@@ -431,7 +433,7 @@ paths:
   /role:
     post:
       tags:
-        - role
+        - Role
       summary: Add a new role
       description: Creates a new role
       operationId: addRole
@@ -457,7 +459,7 @@ paths:
         - bearer: []
     put:
       tags:
-        - role
+        - Role
       summary: Update an existing role
       description: Returns informations of a role
       operationId: updateRole
@@ -486,7 +488,7 @@ paths:
   /role/{applicationId}:
     get:
       tags:
-        - role
+        - Role
       summary: Get all the registered applications
       description: Get all the roles from an application
       operationId: listRole
@@ -514,7 +516,7 @@ paths:
   /role/{roleId}/application/{applicationId}:
     delete:
       tags:
-        - role
+        - Role
       summary: Delete a role from an application
       description: Delete a role by its Id from an application from the given's ID
       parameters:
