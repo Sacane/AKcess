@@ -287,7 +287,7 @@ paths:
             schema:
               $ref: '#/components/schemas/User'
       parameters:
-        - name: userId
+        - name: userID
           in: path
           description: Id of the user to update
           required: true
