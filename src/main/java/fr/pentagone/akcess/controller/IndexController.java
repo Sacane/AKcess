@@ -10,6 +10,6 @@ public class IndexController {
 
     @GetMapping("/hello")
     public ResponseEntity<UserDTO> hello() {
-        return ResponseEntity.ok(new UserDTO("foo", 25));
+        return ResponseEntity.ok(new UserDTO(0, "foo", "bar"));
     }
 }

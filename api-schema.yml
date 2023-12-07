@@ -3,6 +3,17 @@ info:
   title: Akcess - Rest documentation 0.1.0
   description: |-
     API REST project Akcess documentation
+    
+    This documentation describes an API designed to manage authentication and access rights for a collection of applications.
+    
+    A 'manager' represents an entity capable of overseeing the Akcess server instance. A manager is created at the beginning of this instance and can subsequently enable the creation of others with varying degrees of permissions.
+    
+    Each user possesses a username/password pair for connecting to an application, with each user exclusively associated with a single application. Akcess centrally manages all users in one location.
+    
+    Roles define the access rights of a user within an application.
+    
+    This Api can ask for a more global API of Pentagon to retrieves somes datas about this server instance.
+
   termsOfService: http://swagger.io/terms/
   version: 0.1.0
 externalDocs:
@@ -11,6 +22,8 @@ externalDocs:
 servers:
   - url: https://akcess.pentagon.com/api
 tags:
+  - name: Manager
+    description: A couple of credentials login and password used to represent a manager of the Akcess server
   - name: Application
     description: Everything to manage your applications
     externalDocs:
@@ -18,14 +31,12 @@ tags:
       url: http://swagger.io
   - name: User
     description: Entity subscribed to a registered application
-  - name: Manager
-    description: A couple of credentials login and password used to represent a manager of the Akcess server
   - name: info
     description: Global informations of the current Akcess server
   - name: Role
-    description: Role aims to identify the user, application or manager's rights
+    description: Role aims to identify the user, application.
 paths:
-  /application:
+  /applications:
     get:
       tags:
         - Application
@@ -95,7 +106,7 @@ paths:
           description: Validation exception
       security:
         - bearer: []
-  /application/{applicationId}:
+  /applications/{applicationId}:
     get:
       tags:
         - Application
@@ -162,7 +173,7 @@ paths:
           description: Application not found
       security:
         - bearer: []
-  /user/{applicationId}:
+  /users/{applicationId}:
     post:
       tags:
         - User
@@ -180,7 +191,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/User'
+              $ref: '#/components/schemas/Credentials'
       responses:
         '200':
           description: User has successfully been created.
@@ -190,16 +201,11 @@ paths:
           description: The applicationId does not exists
       security:
         - bearer: []
-    put:
+  /users/application/{applicationId}:
+    get:
       tags:
         - User
-      summary: Update a registered crendential
-      requestBody:
-        description: Credential to update
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/User'
+      summary: Get the list of the given application's users
       parameters:
         - name: applicationId
           in: path
@@ -213,7 +219,8 @@ paths:
           description: The given password or username is blank, empty or null.
       security:
         - bearer: []
-  /user/access/application/{applicationId}:
+
+  /users/access/application/{applicationId}:
     post:
       tags:
         - User
@@ -223,7 +230,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UserAcces'
+              $ref: '#/components/schemas/Credentials'
       parameters:
         - name: applicationId
           in: path
@@ -245,7 +252,7 @@ paths:
           description: the given applicationId has not been find
       security:
         - bearer: []
-  /user/{userID}:
+  /users/{userID}:
     delete:
       tags:
         - User
@@ -269,7 +276,29 @@ paths:
           description: The user does not exists
       security:
         - bearer: []
-
+    put:
+      tags:
+        - User
+      summary: Update a registered crendential
+      requestBody:
+        description: Credential to update
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      parameters:
+        - name: userId
+          in: path
+          description: Id of the user to update
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '400':
+          description: The given password or username is blank, empty or null.
+      security:
+        - bearer: []
     get:
       tags:
         - User
@@ -294,7 +323,7 @@ paths:
       security:
         - bearer: []
 
-  /manager/auth:
+  /managers/auth:
     post:
       tags:
         - Manager
@@ -313,7 +342,7 @@ paths:
           description: Wrong rights to ask for an Access token
       security:
         - bearer: []
-  /manager:
+  /managers:
     post:
       tags:
         - Manager
@@ -348,7 +377,7 @@ paths:
           description: The selected manager has its new rights
         '403':
           description: Wrong rights to do this operation
-  /manager/{managerId}:
+  /managers/{managerId}:
     delete:
       tags:
         - Manager
@@ -370,12 +399,12 @@ paths:
         '404':
           description: The given manager does not exists by the given ID
 
-  /info/version:
+  /infos:
     get:
       tags:
         - info
-      summary: Get the current version of the API
-      description: Get the current version of the API
+      summary: Get all the global informations about this Akcess server
+      description: Get all the global informations about this Akcess server such as known vulnerabilities, version number
       operationId: version
       responses:
         '200':
@@ -387,20 +416,7 @@ paths:
 
       security:
         - bearer: []
-  /info/cve:
-    get:
-      tags:
-        - info
-      summary: Get the Common Vulnerabilities and Exposures.
-      description: Get the Common Vulnerabilities and Exposures of this application version.
-      responses:
-        '200':
-          description: successful operation
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/CVE_Info'
-  /role/{roleId}:
+  /roles/{roleId}:
     get:
       tags:
         - Role
@@ -430,7 +446,7 @@ paths:
           description: Application not found
       security:
         - bearer: []
-  /role:
+  /roles:
     post:
       tags:
         - Role
@@ -442,7 +458,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Role'
+              $ref: '#/components/schemas/SimpleRole'
         required: true
       responses:
         '200':
@@ -485,7 +501,7 @@ paths:
           description: the application Id or the role Id is not found
       security:
         - bearer: []
-  /role/{applicationId}:
+  /roles/{applicationId}:
     get:
       tags:
         - Role
@@ -513,7 +529,7 @@ paths:
           description: The role does not exists
       security:
         - bearer: []
-  /role/{roleId}/application/{applicationId}:
+  /roles/{roleId}/application/{applicationId}:
     delete:
       tags:
         - Role
@@ -556,9 +572,6 @@ components:
         name:
           type: string
           example: "MyAwesomeApplication"
-        root_url:
-          type: string
-          example: "https://myawesomeapplication.com/"
     Application_full:
       type: object
       properties:
@@ -589,22 +602,29 @@ components:
         version:
           type: string
           example: "9.0.1"
-    CVE_Info:
-      type: string
-      example : "CVE-2023-45661"
+        cve:
+          type: array
+          items:
+            example: ["CVE-2023-45661", "CVE-2023-45623"]
     User:
       type: object
       properties:
-        id:
-          type: integer
-          format: int64
-          example: 10
         username:
           type: string
           example: "username"
         password:
           type: string
           example: '12345'
+    SimpleRole:
+      type: object
+      properties:
+        label:
+          type: string
+          example: "admin"
+        application_id:
+          type: integer
+          format: int64
+          example: 10
     UserTokenRedirection:
       type: object
       properties:
@@ -637,16 +657,13 @@ components:
         label:
           type: string
           example: "functional_admin"
-        application_reference_id:
+        application_id:
           type: integer
           format: int64
           example: 2
     Manager:
       type: object
       properties:
-        id:
-          type: integer
-          example: 5
         credentials:
           $ref: '#/components/schemas/Credentials'
         roles:
