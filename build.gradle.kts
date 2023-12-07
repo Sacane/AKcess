@@ -16,7 +16,7 @@ repositories {
 dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.boot:spring-boot-starter-web")
-	implementation("jakarta.validation:jakarta.validation-api:2.0.2")
+	implementation("jakarta.validation:jakarta.validation-api:3.0.2")
 	runtimeOnly("com.h2database:h2")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
