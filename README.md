@@ -4,6 +4,6 @@
 
 - Johan "Sacane" Ramaroson Rakotomihamina
 - Mathis "Verestah" Menaa
-- Yohann "Haine" Regueme
+- Yohann "Sekelenao" Regueme
 - Quentin "qtdrake" Tellier
-- Omairt Kamdom
+- Omairt "Kamdom" Kamdom
