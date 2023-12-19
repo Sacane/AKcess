@@ -519,6 +519,14 @@ paths:
       summary: Add a new role for an existing application
       description: Creates a new role giving the role name and the application target Id
       operationId: addRole
+      parameters:
+        - name: applicationId
+          in: path
+          description: ID of the application we wish the roles of
+          required: true
+          schema:
+            type: integer
+            format: int64
       requestBody:
         description: Creates a new role
         content:
