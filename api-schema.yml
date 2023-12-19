@@ -36,12 +36,21 @@ tags:
   - name: Role
     description: Role aims to identify the user, application.
 paths:
-  /applications:
+  /v1/applications:
     get:
       tags:
         - Application
       summary: Get all the registered applications
-      description: Get all the registered applications in the akcess server
+      description: Get the applications in the akcess server matching the filter key, if no key is given then get all the applications.
+      parameters:
+        - name: applicationName
+          in: query
+          description: Filter applications by a specific criterion
+          required: false
+          schema:
+            type: string
+          style: form
+          explode: false
       operationId: listApplication
       responses:
         '200':
@@ -78,35 +87,29 @@ paths:
           description: Invalid input
       security:
         - bearer: []
-    put:
+
+  /v1/applications/{applicationId}/duplicate:
+    post:
       tags:
         - Application
-      summary: Update an existing application
-      description: Update an existing application by Id
-      operationId: updateApplication
-      requestBody:
-        description: Update an existent application
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Application_full'
-        required: true
+      summary: Copy an app
+      description: Copy an app
+      parameters:
+        - name: applicationId
+          in: path
+          description: Application id to copy
+          required: true
+          schema:
+            type: integer
+            format: int64
       responses:
-        '200':
-          description: Successful operation
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Application_full'
         '400':
-          description: Invalid ID supplied
+          description: Invalid application value
         '404':
           description: Application not found
-        '405':
-          description: Validation exception
       security:
         - bearer: []
-  /applications/{applicationId}:
+  /v1/applications/{applicationId}:
     get:
       tags:
         - Application
@@ -153,27 +156,69 @@ paths:
           description: Application not found
       security:
         - bearer: []
-    post:
+    patch:
       tags:
         - Application
-      summary: Copy an app
-      description: Copy an app
+      summary: Update an existing application
+      description: Update an existing application by Id
+      operationId: updateApplication
       parameters:
         - name: applicationId
           in: path
-          description: Application id to copy
+          description: ID of application to return
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: Update an existent application
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Application_full'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Application_full'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Application not found
+        '405':
+          description: Validation exception
+      security:
+        - bearer: []
+  /v1/applications/{applicationId}/users:
+    get:
+      tags:
+        - Application
+      summary: Get the list of the given application's users
+      parameters:
+        - name: applicationId
+          in: path
+          description: Application Id to registered the user in
           required: true
           schema:
             type: integer
             format: int64
       responses:
         '400':
-          description: Invalid application value
-        '404':
-          description: Application not found
+          description: The given password or username is blank, empty or null.
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserOutput'
       security:
         - bearer: []
-  /users/{applicationId}:
+  /v1/users/{applicationId}:
     post:
       tags:
         - User
@@ -191,7 +236,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Credentials'
+              $ref: '#/components/schemas/UserInput'
       responses:
         '200':
           description: User has successfully been created.
@@ -201,26 +246,7 @@ paths:
           description: The applicationId does not exists
       security:
         - bearer: []
-  /users/application/{applicationId}:
-    get:
-      tags:
-        - User
-      summary: Get the list of the given application's users
-      parameters:
-        - name: applicationId
-          in: path
-          description: Application Id to registered the user in
-          required: true
-          schema:
-            type: integer
-            format: int64
-      responses:
-        '400':
-          description: The given password or username is blank, empty or null.
-      security:
-        - bearer: []
-
-  /users/access/application/{applicationId}:
+  /v1/users/application/{applicationId}/access:
     post:
       tags:
         - User
@@ -252,7 +278,7 @@ paths:
           description: the given applicationId has not been find
       security:
         - bearer: []
-  /users/{userID}:
+  /v1/users/{userID}:
     delete:
       tags:
         - User
@@ -276,7 +302,7 @@ paths:
           description: The user does not exists
       security:
         - bearer: []
-    put:
+    patch:
       tags:
         - User
       summary: Update a registered crendential
@@ -285,7 +311,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/User'
+              $ref: '#/components/schemas/Credentials'
       parameters:
         - name: userID
           in: path
@@ -323,7 +349,7 @@ paths:
       security:
         - bearer: []
 
-  /managers/auth:
+  /v1/managers/auth:
     post:
       tags:
         - Manager
@@ -342,7 +368,7 @@ paths:
           description: Wrong rights to ask for an Access token
       security:
         - bearer: []
-  /managers:
+  /v1/managers:
     post:
       tags:
         - Manager
@@ -361,23 +387,7 @@ paths:
           description: Invalid credential
         '403':
           description: Wrong rights to do this operation
-    put:
-      tags:
-        - Manager
-      summary: Give new rights to another manager
-      security:
-        - bearer: []
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ManagerWithRoles'
-      responses:
-        '200':
-          description: The selected manager has its new rights
-        '403':
-          description: Wrong rights to do this operation
-  /managers/{managerId}:
+  /v1/managers/{managerId}:
     delete:
       tags:
         - Manager
@@ -399,7 +409,7 @@ paths:
         '404':
           description: The given manager does not exists by the given ID
 
-  /infos:
+  /v1/infos:
     get:
       tags:
         - info
@@ -416,7 +426,7 @@ paths:
 
       security:
         - bearer: []
-  /roles/{roleId}:
+  /v1/roles/{roleId}:
     get:
       tags:
         - Role
@@ -446,34 +456,8 @@ paths:
           description: Application not found
       security:
         - bearer: []
-  /roles:
-    post:
-      tags:
-        - Role
-      summary: Add a new role
-      description: Creates a new role
-      operationId: addRole
-      requestBody:
-        description: Creates a new role
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/SimpleRole'
-        required: true
-      responses:
-        '200':
-          description: successful operation
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Role'
-        '400':
-          description: the application Id is incorrect
-      security:
-        - bearer: []
-    put:
+  /v1/roles:
+    patch:
       tags:
         - Role
       summary: Update an existing role
@@ -501,7 +485,7 @@ paths:
           description: the application Id or the role Id is not found
       security:
         - bearer: []
-  /roles/{applicationId}:
+  /v1/roles/{applicationId}:
     get:
       tags:
         - Role
@@ -529,7 +513,33 @@ paths:
           description: The role does not exists
       security:
         - bearer: []
-  /roles/{roleId}/application/{applicationId}:
+    post:
+      tags:
+        - Role
+      summary: Add a new role for an existing application
+      description: Creates a new role giving the role name and the application target Id
+      operationId: addRole
+      requestBody:
+        description: Creates a new role
+        content:
+          text/plain:
+            schema:
+              type: string
+        required: true
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Role'
+        '400':
+          description: the application Id is incorrect
+      security:
+        - bearer: []
+  /v1/roles/{roleId}/application/{applicationId}:
     delete:
       tags:
         - Role
@@ -563,6 +573,7 @@ components:
             token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
   schemas:
     Application_light:
+      description: Light representation of an application with only its Id and its name.
       type: object
       properties:
         id:
@@ -574,6 +585,7 @@ components:
           example: "MyAwesomeApplication"
     Application_full:
       type: object
+      description: Complete representation of an application, contains its id, its name, its root url, its registered users and all the roles associated by it. Each role of this application is the range that a user can have with it.
       properties:
         id:
           type: integer
@@ -588,13 +600,14 @@ components:
         users:
           type: array
           items:
-            $ref: '#/components/schemas/User'
+            $ref: '#/components/schemas/Credentials'
         roles:
           type: array
           items:
             $ref: '#/components/schemas/Role'
     API_Info:
       type: object
+      description: Represent all the global informations that has this Akcess instance, usefull to know its version number and vulnerabilities that is known for it.
       properties:
         name:
           type: string
@@ -606,49 +619,41 @@ components:
           type: array
           items:
             example: ["CVE-2023-45661", "CVE-2023-45623"]
-    User:
+    UserInput:
       type: object
+      description: Represent a user to register into the Akcess instance.
       properties:
         username:
           type: string
-          example: "username"
-        password:
-          type: string
-          example: '12345'
-    SimpleRole:
+          example: Sacane
+        credentials:
+          $ref: '#/components/schemas/Credentials'
+    UserOutput:
       type: object
+      description: User representation to share to the outside of the Akcess representation, giving its id, and its username.
       properties:
-        label:
-          type: string
-          example: "admin"
-        application_id:
+        userId:
           type: integer
-          format: int64
           example: 10
+        username:
+          type: string
+          example: Sacane
     UserTokenRedirection:
       type: object
+      description: Represent user by its id, its access token and the url where the user must be redirected to.
       properties:
+        userId:
+          type: integer
+          example: 1
         access_token:
           type: string
           example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
         redirection_url:
           type: string
           example: "http://client.myawesomeapplication.com"
-    UserAcces:
-      type: object
-      properties:
-        applicationId:
-          type: integer
-          format: int64
-          example: 10
-        username:
-          type: string
-          example: "username"
-        password:
-          type: string
-          example: '12345'
     Role:
       type: object
+      description: Represent for a given application the range of the entity's accessibility through this application.
       properties:
         id:
           type: integer
@@ -663,27 +668,16 @@ components:
           example: 2
     Manager:
       type: object
+      description: Represent an entity that has access to the admin console of the Akcess instance.
       properties:
+        username:
+          type: string
+          example: Sacane
         credentials:
           $ref: '#/components/schemas/Credentials'
-        roles:
-          type: array
-          items:
-            type: string
-          example: ["user", "admin", "maintainer"]
-    ManagerWithRoles:
-      type: object
-      properties:
-        manager_id:
-          type: integer
-          example: 5
-        roles:
-          type: array
-          items:
-            type: string
-          example: ["admin", "functional_admin"]
     Credentials:
       type: object
+      description: Represent a couple of login and password entry to connect the user into an application
       properties:
         login:
           type: string
