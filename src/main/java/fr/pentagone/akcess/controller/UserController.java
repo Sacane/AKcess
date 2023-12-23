@@ -1,7 +1,7 @@
 package fr.pentagone.akcess.controller;
 
-import fr.pentagone.akcess.dto.UserDTO;
 import fr.pentagone.akcess.dto.UserIdDTO;
+import fr.pentagone.akcess.dto.UserInputDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -9,14 +9,15 @@ import java.util.logging.Logger;
 
 @RestController
 @RequestMapping("/users")
+@CrossOrigin(origins = "https://editor.swagger.io/", maxAge = 3600)
 public class UserController {
     private static final Logger LOGGER = Logger.getLogger(UserController.class.getName());
     @PostMapping("/{applicationId}")
     public ResponseEntity<UserIdDTO> registerUser(
             @PathVariable("applicationId") int applicationId,
-            @RequestBody UserDTO userDTO
+            @RequestBody UserInputDTO credentialsDTO
     ){
         LOGGER.info("You just entered the following applicationId : " + applicationId);
-        return ResponseEntity.ok(new UserIdDTO(1, userDTO.username())); // code 200
+        return ResponseEntity.ok(new UserIdDTO(1, credentialsDTO.username())); // code 200
     }
 }
