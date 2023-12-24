@@ -7,7 +7,7 @@ plugins {
 group = "fr.pentagone.akcess"
 version = "0.0.1-SNAPSHOT"
 
-java.sourceCompatibility = JavaVersion.VERSION_17
+java.sourceCompatibility = JavaVersion.VERSION_19
 
 repositories {
 	mavenCentral()
@@ -17,6 +17,8 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("jakarta.validation:jakarta.validation-api:3.0.2")
+	implementation("org.hibernate:hibernate-jpamodelgen:6.4.0.Final")
+	annotationProcessor("org.hibernate:hibernate-jpamodelgen:6.4.0.Final")
 	runtimeOnly("com.h2database:h2")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
@@ -28,3 +30,4 @@ tasks.withType<Test> {
 tasks.bootBuildImage {
 	builder.set("paketobuildpacks/builder-jammy-base:latest")
 }
+
