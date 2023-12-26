@@ -20,7 +20,7 @@ externalDocs:
   description: Find out more about Akcess
   url: http://swagger.io
 servers:
-  - url: https://akcess.pentagon.com/api
+  - url: http://localhost:8080/api/
 tags:
   - name: Manager
     description: A couple of credentials login and password used to represent a manager of the Akcess server
