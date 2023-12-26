@@ -6,7 +6,6 @@ import fr.pentagone.akcess.service.ManagerService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.UUID;
 import java.util.logging.Logger;
 
 @RestController

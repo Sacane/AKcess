@@ -18,6 +18,7 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("jakarta.validation:jakarta.validation-api:3.0.2")
 	implementation("org.hibernate:hibernate-jpamodelgen:6.4.0.Final")
+	implementation("org.springframework.boot:spring-boot-starter-security")
 	annotationProcessor("org.hibernate:hibernate-jpamodelgen:6.4.0.Final")
 	runtimeOnly("com.h2database:h2")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")

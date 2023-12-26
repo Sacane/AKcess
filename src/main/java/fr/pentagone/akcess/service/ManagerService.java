@@ -1,6 +1,6 @@
 package fr.pentagone.akcess.service;
 
-import fr.pentagone.akcess.dto.TokenDTO;
+import fr.pentagone.akcess.dto.ManagerTokenDTO;
 import fr.pentagone.akcess.repository.sql.Manager;
 import fr.pentagone.akcess.repository.sql.ManagerRepository;
 import fr.pentagone.akcess.service.session.SessionManager;
@@ -10,7 +10,8 @@ import org.springframework.stereotype.Service;
 import java.util.UUID;
 import java.util.logging.Logger;
 
-import static org.springframework.http.ResponseEntity.*;
+import static org.springframework.http.ResponseEntity.badRequest;
+import static org.springframework.http.ResponseEntity.ok;
 
 @Service
 public class ManagerService {
@@ -36,7 +37,7 @@ public class ManagerService {
         }
     }
 
-    public ResponseEntity<TokenDTO> verify(String login, String password) {
+    public ResponseEntity<ManagerTokenDTO> verify(String login, String password) {
         var managerResult = managerRepository.findByLogin(login);
         if(managerResult.isPresent()){
             var manager = managerResult.get();
@@ -44,7 +45,7 @@ public class ManagerService {
             if(isPasswordOk) {
                 var token = UUID.randomUUID();
                 sessionManager.registerSession(manager.getId(), token);
-                return ok(new TokenDTO(token));
+                return ok(new ManagerTokenDTO(manager.getId(), token.toString()));
             }
             else return badRequest().build();
         }
