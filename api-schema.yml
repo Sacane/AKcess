@@ -591,6 +591,9 @@ components:
         name:
           type: string
           example: "MyAwesomeApplication"
+        url:
+          type: string
+          example: "http://myAwesomeApplication.com"
     Application_full:
       type: object
       description: Complete representation of an application, contains its id, its name, its root url, its registered users and all the roles associated by it. Each role of this application is the range that a user can have with it.

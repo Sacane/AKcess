@@ -1,13 +1,13 @@
 package fr.pentagone.akcess.service;
 
-import fr.pentagone.akcess.dto.ManagerTokenDTO;
+import fr.pentagone.akcess.dto.TokenDTO;
 import fr.pentagone.akcess.repository.sql.Manager;
 import fr.pentagone.akcess.repository.sql.ManagerRepository;
 import fr.pentagone.akcess.service.session.SessionManager;
+import fr.pentagone.akcess.service.session.TokenManager;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.UUID;
 import java.util.logging.Logger;
 
 import static org.springframework.http.ResponseEntity.badRequest;
@@ -20,11 +20,13 @@ public class ManagerService {
     private final ManagerRepository managerRepository;
     private final PasswordEncoder passwordEncoder;
     private final SessionManager sessionManager;
+    private final TokenManager tokenManager;
 
-    public ManagerService(ManagerRepository managerRepository, PasswordEncoder passwordEncoder, SessionManager sessionManager){
+    public ManagerService(ManagerRepository managerRepository, PasswordEncoder passwordEncoder, SessionManager sessionManager, TokenManager tokenManager){
         this.managerRepository = managerRepository;
         this.passwordEncoder = passwordEncoder;
         this.sessionManager = sessionManager;
+        this.tokenManager = tokenManager;
     }
 
     public void insertBaseManagerIfNotExists(){
@@ -37,15 +39,15 @@ public class ManagerService {
         }
     }
 
-    public ResponseEntity<ManagerTokenDTO> verify(String login, String password) {
+    public ResponseEntity<TokenDTO> verify(String login, String password) {
         var managerResult = managerRepository.findByLogin(login);
         if(managerResult.isPresent()){
             var manager = managerResult.get();
             var isPasswordOk = passwordEncoder.verify(password, manager.getPassword());
             if(isPasswordOk) {
-                var token = UUID.randomUUID();
-                sessionManager.registerSession(manager.getId(), token);
-                return ok(new ManagerTokenDTO(manager.getId(), token.toString()));
+                var jwtToken = tokenManager.generateJwtToken(manager.getId());
+                sessionManager.registerSession(manager.getId(), jwtToken.accessToken());
+                return ok(new TokenDTO(jwtToken.jwt()));
             }
             else return badRequest().build();
         }
