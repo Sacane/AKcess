@@ -18,9 +18,9 @@ public class ApplicationController {
     public ApplicationController(ApplicationService applicationService){
         this.applicationService = applicationService;
     }
-    @PostMapping()
+    @PostMapping
     public ResponseEntity<LightApplicationIdDTO> addApplication(@RequestBody LightApplicationDTO applicationDTO){
-        LOGGER.info("Put an instruction..." + applicationDTO);
+        LOGGER.info("Trying to save an application..." + applicationDTO);
         return applicationService.addApplication(applicationDTO);
     }
 }
