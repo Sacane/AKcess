@@ -6,6 +6,5 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/roles")
-@CrossOrigin(origins = "https://editor.swagger.io/", maxAge = 3600)
 public class RoleController {
 }

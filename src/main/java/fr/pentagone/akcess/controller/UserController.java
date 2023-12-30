@@ -9,7 +9,6 @@ import java.util.logging.Logger;
 
 @RestController
 @RequestMapping("/users")
-@CrossOrigin(origins = "https://editor.swagger.io/", maxAge = 3600)
 public class UserController {
     private static final Logger LOGGER = Logger.getLogger(UserController.class.getName());
     @PostMapping("/{applicationId}")

@@ -10,7 +10,6 @@ import java.util.logging.Logger;
 
 @RestController
 @RequestMapping("/applications")
-@CrossOrigin(origins = "https://editor.swagger.io/", maxAge = 3600)
 public class ApplicationController {
     private static final Logger LOGGER = Logger.getLogger(ApplicationController.class.getName());
     private final ApplicationService applicationService;
