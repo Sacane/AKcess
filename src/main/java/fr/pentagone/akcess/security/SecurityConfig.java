@@ -1,4 +1,4 @@
-package fr.pentagone.akcess;
+package fr.pentagone.akcess.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

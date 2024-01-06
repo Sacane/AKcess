@@ -1,4 +1,4 @@
-package fr.pentagone.akcess;
+package fr.pentagone.akcess.security;
 
 import fr.pentagone.akcess.exception.HttpException;
 import fr.pentagone.akcess.service.session.SessionManager;
@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.util.logging.Logger;
 
 @Component
@@ -27,15 +28,25 @@ public class BearerTokenFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         LOGGER.info("Start bearer filter...");
         var authorization = request.getHeader("Authorization"); // JWT Token
-        if(authorization == null || !authorization.startsWith("Bearer ")) {
+
+        var spc = new SecurityPathConfigurer()
+                .exclude("auth")
+                .exclude("access")
+                .exclude("h2-console")
+                .exclude("ping");
+        if(authorization == null) {
             var requestPath = request.getServletPath();
-            if(requestPath.contains("auth") || requestPath.contains("access") || requestPath.contains("h2-console") || requestPath.contains("ping")){
-                filterChain.doFilter(request, response);
+            spc.onExcluded(requestPath, () -> {
+                try {
+                    filterChain.doFilter(request, response);
+                } catch (IOException e) {
+                    throw new UncheckedIOException(e);
+                } catch (ServletException e) {
+                    throw new RuntimeException(e);
+                }
                 LOGGER.info("Authorize to pass");
-                return;
-            }
-            LOGGER.severe("Invalid auth header " + requestPath);
-            throw HttpException.badRequest("The given authorization is invalid");
+            });
+            return;
         }
         var authorizedInput = authorization.replaceFirst("Bearer ", "");
         var claimsResponse = tokenManager.claims(authorizedInput);
