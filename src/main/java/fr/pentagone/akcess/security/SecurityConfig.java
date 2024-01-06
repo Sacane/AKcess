@@ -1,5 +1,7 @@
 package fr.pentagone.akcess.security;
 
+import org.apache.catalina.filters.CorsFilter;
+import org.apache.tomcat.util.file.ConfigurationSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -14,6 +16,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -22,7 +25,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, BearerTokenFilter bearerTokenFilter) throws Exception {
         return http.authorizeHttpRequests(custom -> custom.anyRequest().permitAll())
-                .cors(customizer -> customizer.configurationSource(corsConfigurationSource()))
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(AbstractHttpConfigurer::disable)
                 .headers(customizer -> customizer.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
                 .sessionManagement(customizer -> customizer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -30,12 +33,12 @@ public class SecurityConfig {
                 .addFilterBefore(bearerTokenFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
+
     @Bean
     public CorsConfigurationSource corsConfigurationSource(){
         var configurationSource = new CorsConfiguration();
-        configurationSource.addAllowedOriginPattern("https://editor.swagger.io*");
+        configurationSource.addAllowedOrigin("https://editor.swagger.io");
         configurationSource.setAllowedMethods(Arrays.asList("GET","POST","PUT","PATCH","DELETE","OPTIONS"));
-        configurationSource.setAllowCredentials(false);
         var source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configurationSource);
         return source;

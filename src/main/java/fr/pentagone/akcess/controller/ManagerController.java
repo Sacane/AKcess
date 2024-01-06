@@ -10,7 +10,6 @@ import java.util.logging.Logger;
 
 @RestController
 @RequestMapping("/managers")
-@CrossOrigin("https://editor.swagger.io")
 public class ManagerController {
     private final ManagerService managerService;
     private static final Logger LOGGER = Logger.getLogger(ManagerController.class.getName());
