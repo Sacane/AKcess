@@ -29,7 +29,7 @@ public class BearerTokenFilter extends OncePerRequestFilter {
         var authorization = request.getHeader("Authorization"); // JWT Token
         if(authorization == null || !authorization.startsWith("Bearer ")) {
             var requestPath = request.getServletPath();
-            if(requestPath.contains("auth") || requestPath.contains("access") || requestPath.contains("h2-console")){
+            if(requestPath.contains("auth") || requestPath.contains("access") || requestPath.contains("h2-console") || requestPath.contains("ping")){
                 filterChain.doFilter(request, response);
                 LOGGER.info("Authorize to pass");
                 return;
