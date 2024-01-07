@@ -15,8 +15,6 @@ public class ApplicationController {
     private static final Logger LOGGER = Logger.getLogger(ApplicationController.class.getName());
     private final ApplicationService applicationService;
 
-    @Value("${application.properties}")
-    private String info;
 
     public ApplicationController(ApplicationService applicationService){
         this.applicationService = applicationService;
@@ -27,10 +25,7 @@ public class ApplicationController {
         return applicationService.addApplication(applicationDTO);
     }
 
-    @GetMapping("/info")
-    public ResponseEntity<String> applicationInfo(){
-        return ResponseEntity.ok("Version : " + info);
-    }
+
     //TODO Voir si c'est au bonne endroit
 
 }

@@ -25,7 +25,7 @@ public class UserController {
             @RequestBody UserInputDTO credentialsDTO
     ){
         LOGGER.info("You just entered the following applicationId : " + applicationId);
-        return ResponseEntity.ok(new UserIdDTO(1, credentialsDTO.username())); // code 200
+        return userService.save(credentialsDTO);
     }
 
     @DeleteMapping("/{userId}")

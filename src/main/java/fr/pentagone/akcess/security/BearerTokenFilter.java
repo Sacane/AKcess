@@ -33,7 +33,8 @@ public class BearerTokenFilter extends OncePerRequestFilter {
                 .exclude("auth")
                 .exclude("access")
                 .exclude("h2-console")
-                .exclude("ping");
+                .exclude("ping")
+                .exclude("info");
         if(authorization == null) {
             var requestPath = request.getServletPath();
             spc.onExcluded(requestPath, () -> {
