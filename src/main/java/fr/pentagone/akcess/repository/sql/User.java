@@ -2,11 +2,14 @@ package fr.pentagone.akcess.repository.sql;
 
 import jakarta.persistence.Entity;
 
+import java.util.Arrays;
+
 @Entity(name = "users")
 public class User extends AbstractEntity<Integer>{
     private String username;
     private byte[] password;
     private String login;
+
 
     public User(){}
 
@@ -38,5 +41,14 @@ public class User extends AbstractEntity<Integer>{
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "username='" + username + '\'' +
+                ", password=" + Arrays.toString(password) +
+                ", login='" + login + '\'' +
+                '}';
     }
 }

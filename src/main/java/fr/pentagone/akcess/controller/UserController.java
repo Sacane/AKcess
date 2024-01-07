@@ -25,7 +25,7 @@ public class UserController {
             @RequestBody UserInputDTO credentialsDTO
     ){
         LOGGER.info("You just entered the following applicationId : " + applicationId);
-        return userService.save(credentialsDTO);
+        return userService.save(applicationId, credentialsDTO);
     }
 
     @DeleteMapping("/{userId}")

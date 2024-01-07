@@ -1,14 +1,14 @@
 package fr.pentagone.akcess.controller;
 
+import fr.pentagone.akcess.dto.FullApplicationDTO;
 import fr.pentagone.akcess.dto.LightApplicationDTO;
 import fr.pentagone.akcess.dto.LightApplicationIdDTO;
+import fr.pentagone.akcess.dto.UserIdDTO;
 import fr.pentagone.akcess.service.ApplicationService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.logging.Logger;
 
 @RestController
@@ -25,5 +25,10 @@ public class ApplicationController {
     public ResponseEntity<LightApplicationIdDTO> addApplication(@RequestBody LightApplicationDTO applicationDTO){
         LOGGER.info("Trying to save an application..." + applicationDTO);
         return applicationService.addApplication(applicationDTO);
+    }
+
+    @GetMapping("/{applicationId}/users")
+    public ResponseEntity<List<UserIdDTO>> retrieveAllAppUsers(@PathVariable("applicationId") int applicationId){
+        return applicationService.retrieveUsers(applicationId);
     }
 }

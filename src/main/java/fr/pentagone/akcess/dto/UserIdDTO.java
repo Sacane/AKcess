@@ -1,4 +1,4 @@
 package fr.pentagone.akcess.dto;
 
-public record UserIdDTO(int id, String username) {
+public record UserIdDTO(int userId, String username) {
 }

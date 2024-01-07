@@ -74,7 +74,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Application_light'
+                  $ref: '#/components/schemas/Application_full'
       security:
         - bearer: []
     post:
@@ -520,7 +520,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Application_light'
+                  $ref: '#/components/schemas/Application_full'
         '404':
           description: The role does not exists
       security:
@@ -596,10 +596,6 @@ components:
       description: Light representation of an application with only its Id and its name.
       type: object
       properties:
-        id:
-          type: integer
-          format: int64
-          example: 10
         name:
           type: string
           example: "MyAwesomeApplication"

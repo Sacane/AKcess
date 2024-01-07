@@ -7,6 +7,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -46,10 +47,7 @@ public class BearerTokenFilter extends OncePerRequestFilter {
                 LOGGER.info("Authorize to pass");
                 return;
             }
-            response.setStatus(403);
-            var writer = response.getWriter();
-            writer.write("Invalid request, Authorization content missing");
-            writer.flush();
+            ErrorHandlers.respondError(response, 403, "Invalid request, Authorization content missing");
             LOGGER.severe("Invalid request, Authorization content missing");
             return;
         }
@@ -57,6 +55,7 @@ public class BearerTokenFilter extends OncePerRequestFilter {
         var claimsResponse = tokenManager.claims(authorizedInput);
         if(claimsResponse.isEmpty()){
             LOGGER.severe("Invalid token format : " + authorizedInput);
+            ErrorHandlers.respondError(response, HttpStatus.UNAUTHORIZED.value(), "Invalid token format, missing value");
             throw HttpException.badRequest("Invalid token format : " + authorizedInput);
         }
         var claims = claimsResponse.get();
@@ -70,7 +69,8 @@ public class BearerTokenFilter extends OncePerRequestFilter {
 
         if(!sessionManager.isRegistered(id, token)){
             LOGGER.severe("Unrecognized token..." + token);
-            throw HttpException.forbidden("Unrecognized token..." + token);
+            ErrorHandlers.respondError(response, 401, "Invalid request, Authorization content missing");
+            return;
         }
 
         filterChain.doFilter(request, response);
