@@ -34,7 +34,7 @@ tags:
   - name: info
     description: Global data of the current Akcess server
   - name: Role
-    description: Role aims to identify the user, application.
+    description: Role aims to identify the application's users.
   - name: Ping
     description: Endpoints only used to check the availability of the Akcess server, always returning the same value when calls it.
 paths:
@@ -45,21 +45,11 @@ paths:
       summary: Get a response from the Akcess server instance
       responses:
         '200':
-          description: Akcess server has successfully received your ping request, sent you back a pong response.
+          description: Akcess server has successfully get your ping request, sent you back a pong response.
           content:
             text/plain:
               example: 'pong'
-  /v1/ping/{ping}:
-    get:
-      tags:
-        - Ping
-      summary: Get the sent string to the Akcess server as a response from it
-      responses:
-        '200':
-          description: Akcess server has successfully received your ping request, sent you back the message.
-          content:
-            text/plain:
-              example: 'pong'
+
   /v1/applications:
     get:
       tags:
