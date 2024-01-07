@@ -39,10 +39,8 @@ public class BearerTokenFilter extends OncePerRequestFilter {
             spc.onExcluded(requestPath, () -> {
                 try {
                     filterChain.doFilter(request, response);
-                } catch (IOException e) {
-                    throw new UncheckedIOException(e);
-                } catch (ServletException e) {
-                    throw new RuntimeException(e);
+                } catch (IOException | ServletException e) {
+                    throw HttpException.badRequest(e.getMessage());
                 }
                 LOGGER.info("Authorize to pass");
             });
