@@ -1,7 +1,9 @@
 package fr.pentagone.akcess.controller;
 
+import fr.pentagone.akcess.dto.UserDTO;
 import fr.pentagone.akcess.dto.UserIdDTO;
 import fr.pentagone.akcess.dto.UserInputDTO;
+import fr.pentagone.akcess.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,6 +13,12 @@ import java.util.logging.Logger;
 @RequestMapping("/users")
 public class UserController {
     private static final Logger LOGGER = Logger.getLogger(UserController.class.getName());
+    private final UserService userService;
+
+    public UserController(UserService userService){
+        this.userService = userService;
+    }
+
     @PostMapping("/{applicationId}")
     public ResponseEntity<UserIdDTO> registerUser(
             @PathVariable("applicationId") int applicationId,
@@ -18,5 +26,16 @@ public class UserController {
     ){
         LOGGER.info("You just entered the following applicationId : " + applicationId);
         return ResponseEntity.ok(new UserIdDTO(1, credentialsDTO.username())); // code 200
+    }
+
+    @DeleteMapping("/{userId}")
+    public ResponseEntity<String> deleteUser(@PathVariable("userId") int userId){
+        return userService.deleteUser(userId);
+    }
+
+    @GetMapping("/{userId}")
+    public ResponseEntity<UserDTO> getUserInfo(@PathVariable("userId") int userId){
+        LOGGER.info("Getting info of the user with the id : " + userId);
+        return userService.getUserInfo(userId);
     }
 }
