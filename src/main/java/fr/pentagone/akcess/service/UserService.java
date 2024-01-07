@@ -34,9 +34,10 @@ public class UserService{
             return ResponseEntity.ok("User deleted successfully.");
         }
         LOGGER.info("User " + userId + " was not found");
-        return new ResponseEntity<>("User is not present in our database.", HttpStatus.BAD_REQUEST);
+        throw HttpException.badRequest("User not found");
     }
 
+    @Transactional
     public ResponseEntity<UserDTO> getUserInfo(int userId){
         var userResult = userRepository.findById(userId);
         if(userResult.isPresent()){
