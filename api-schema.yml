@@ -32,10 +32,34 @@ tags:
   - name: User
     description: Entity subscribed to a registered application
   - name: info
-    description: Global informations of the current Akcess server
+    description: Global data of the current Akcess server
   - name: Role
     description: Role aims to identify the user, application.
+  - name: Ping
+    description: Endpoints only used to check the availability of the Akcess server, always returning the same value when calls it.
 paths:
+  /v1/ping:
+    get:
+      tags:
+        - Ping
+      summary: Get a response from the Akcess server instance
+      responses:
+        '200':
+          description: Akcess server has successfully received your ping request, sent you back a pong response.
+          content:
+            text/plain:
+              example: 'pong'
+  /v1/ping/{ping}:
+    get:
+      tags:
+        - Ping
+      summary: Get the sent string to the Akcess server as a response from it
+      responses:
+        '200':
+          description: Akcess server has successfully received your ping request, sent you back the message.
+          content:
+            text/plain:
+              example: 'pong'
   /v1/applications:
     get:
       tags:
@@ -366,8 +390,6 @@ paths:
           description: The given password or username is blank, empty or null. Also if the password does not correspond to the templates.
         '403':
           description: Wrong rights to ask for an Access token
-      security:
-        - bearer: []
   /v1/managers:
     post:
       tags:
