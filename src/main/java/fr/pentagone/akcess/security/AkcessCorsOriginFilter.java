@@ -16,13 +16,17 @@ public class AkcessCorsOriginFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         LOGGER.info("Cors Origin filter");
-        var origin = request.getHeaders("Origin").asIterator().next();
+        var origin = request.getHeader("Origin");
+        if(origin == null)  {
+            filterChain.doFilter(request, response);
+            return;
+        }
         if(origin.contains("editor.swagger")) {
             response.addHeader("Access-Control-Allow-Origin", origin);
             response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS");
             response.setHeader("Access-Control-Allow-Credentials", "true");
             response.setHeader("Access-Control-Allow-Headers", "content-type, x-gwt-module-base, x-gwt-permutation, clientid, longpush");
-            LOGGER.info("ACCEPT ORIGIN");
+            LOGGER.info("The origin has been accepted by the cors origin policy");
         } else {
             LOGGER.severe("This origin is not accepted");
         }

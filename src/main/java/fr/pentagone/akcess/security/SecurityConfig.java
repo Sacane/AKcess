@@ -36,15 +36,10 @@ public class SecurityConfig {
 
     @Bean
     public CorsFilter corsFilter() {
-        return new CorsFilter(corsConfigurationSource());
-    }
-
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource(){
         var configurationSource = new CorsConfiguration();
         configurationSource.setAllowedMethods(Arrays.asList("GET","POST","PUT","PATCH","DELETE","OPTIONS"));
         var source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configurationSource);
-        return source;
+        return new CorsFilter(source);
     }
 }
