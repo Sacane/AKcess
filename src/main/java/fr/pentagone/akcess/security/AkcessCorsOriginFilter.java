@@ -25,7 +25,7 @@ public class AkcessCorsOriginFilter extends OncePerRequestFilter {
             response.addHeader("Access-Control-Allow-Origin", origin);
             response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS");
             response.setHeader("Access-Control-Allow-Credentials", "true");
-            response.setHeader("Access-Control-Allow-Headers", "content-type, x-gwt-module-base, x-gwt-permutation, clientid, longpush");
+            response.setHeader("Access-Control-Allow-Headers", "content-type, x-gwt-module-base, x-gwt-permutation, clientid, longpush, Authorization");
             LOGGER.info("The origin has been accepted by the cors origin policy");
         } else {
             LOGGER.severe("This origin is not accepted");

@@ -37,14 +37,20 @@ public class BearerTokenFilter extends OncePerRequestFilter {
                 .exclude("info");
         if(authorization == null) {
             var requestPath = request.getServletPath();
-            spc.onExcluded(requestPath, () -> {
+            if(spc.isExcluded(requestPath)) {
                 try {
                     filterChain.doFilter(request, response);
                 } catch (IOException | ServletException e) {
                     throw HttpException.badRequest(e.getMessage());
                 }
                 LOGGER.info("Authorize to pass");
-            });
+                return;
+            }
+            response.setStatus(403);
+            var writer = response.getWriter();
+            writer.write("Invalid request, Authorization content missing");
+            writer.flush();
+            LOGGER.severe("Invalid request, Authorization content missing");
             return;
         }
         var authorizedInput = authorization.replaceFirst("Bearer ", "");
