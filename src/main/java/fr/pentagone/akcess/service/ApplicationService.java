@@ -32,7 +32,7 @@ public class ApplicationService {
 
     @Transactional
     public ResponseEntity<List<UserIdDTO>> retrieveUsers(int applicationId) {
-        var appResult = applicationRepository.findById(applicationId);
+        var appResult = applicationRepository.findByIdWithUsers(applicationId);
         if(appResult.isEmpty()){
             throw HttpException.notFound("The application has not been found");
         }
