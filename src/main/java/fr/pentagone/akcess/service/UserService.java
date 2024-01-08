@@ -38,11 +38,11 @@ public class UserService{
     }
 
     @Transactional
-    public ResponseEntity<UserDTO> getUserInfo(int userId){
+    public ResponseEntity<UserIdDTO> getUserInfo(int userId){
         var userResult = userRepository.findById(userId);
         if(userResult.isPresent()){
             var userGet = userResult.get();
-            return ResponseEntity.ok(new UserDTO(userGet.getUsername(), null)); //TODO Encoder le password ou traitement dessus à faire
+            return ResponseEntity.ok(new UserIdDTO(userGet.getId(), userGet.getUsername()));
         }
         return ResponseEntity.badRequest().build();
     }

@@ -12,9 +12,4 @@ public class SecurityPathConfigurer {
     public boolean isExcluded(String path) {
         return excludes.stream().anyMatch(path::contains);
     }
-    public void onExcluded(String path, Runnable onExcluded) {
-        if(isExcluded(path)){
-            onExcluded.run();
-        }
-    }
 }

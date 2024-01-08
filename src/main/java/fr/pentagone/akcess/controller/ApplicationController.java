@@ -1,6 +1,5 @@
 package fr.pentagone.akcess.controller;
 
-import fr.pentagone.akcess.dto.FullApplicationDTO;
 import fr.pentagone.akcess.dto.LightApplicationDTO;
 import fr.pentagone.akcess.dto.LightApplicationIdDTO;
 import fr.pentagone.akcess.dto.UserIdDTO;

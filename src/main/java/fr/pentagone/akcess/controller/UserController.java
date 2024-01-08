@@ -1,6 +1,5 @@
 package fr.pentagone.akcess.controller;
 
-import fr.pentagone.akcess.dto.UserDTO;
 import fr.pentagone.akcess.dto.UserIdDTO;
 import fr.pentagone.akcess.dto.UserInputDTO;
 import fr.pentagone.akcess.service.UserService;
@@ -34,7 +33,7 @@ public class UserController {
     }
 
     @GetMapping("/{userId}")
-    public ResponseEntity<UserDTO> getUserInfo(@PathVariable("userId") int userId){
+    public ResponseEntity<UserIdDTO> getUserInfo(@PathVariable("userId") int userId){
         LOGGER.info("Getting info of the user with the id : " + userId);
         return userService.getUserInfo(userId);
     }
