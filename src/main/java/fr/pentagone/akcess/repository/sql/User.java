@@ -1,6 +1,8 @@
 package fr.pentagone.akcess.repository.sql;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.ManyToOne;
 
 import java.util.Arrays;
 
@@ -9,7 +11,8 @@ public class User extends AbstractEntity<Integer>{
     private String username;
     private byte[] password;
     private String login;
-
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Application application;
 
     public User(){}
 
@@ -50,5 +53,13 @@ public class User extends AbstractEntity<Integer>{
                 ", password=" + Arrays.toString(password) +
                 ", login='" + login + '\'' +
                 '}';
+    }
+
+    public Application getApplication() {
+        return application;
+    }
+
+    public void setApplication(Application application) {
+        this.application = application;
     }
 }

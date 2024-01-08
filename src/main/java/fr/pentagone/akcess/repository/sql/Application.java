@@ -10,10 +10,7 @@ public class Application extends AbstractEntity<Integer>{
 
     private String label;
     private String url;
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(
-            name = "app_id"
-    )
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = User_.APPLICATION)
     private List<User> users = new ArrayList<>();
 
     public Application(){}
@@ -45,5 +42,6 @@ public class Application extends AbstractEntity<Integer>{
 
     public void addUser(User user){
         this.users.add(user);
+        user.setApplication(this);
     }
 }
