@@ -2,6 +2,7 @@ package fr.pentagone.akcess.repository.sql;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
+import fr.pentagone.akcess.dto.RoleDTO;
 
 @Entity
 public class Role extends AbstractEntity<Integer>{
@@ -25,6 +26,11 @@ public class Role extends AbstractEntity<Integer>{
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public void update(RoleDTO inputRole, Application application){
+        setApplication(application);
+        this.name = inputRole.label();
     }
 
     public void setApplication(Application application) {
