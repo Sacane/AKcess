@@ -3,8 +3,10 @@ package fr.pentagone.akcess.repository.sql;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
 import fr.pentagone.akcess.dto.RoleDTO;
+import jakarta.persistence.Table;
 
 @Entity
+@Table(name = "roles")
 public class Role extends AbstractEntity<Integer>{
     private String name;
     @ManyToOne

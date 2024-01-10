@@ -12,6 +12,8 @@ public class Application extends AbstractEntity<Integer>{
     private String url;
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = User_.APPLICATION)
     private List<User> users = new ArrayList<>();
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = Role_.APPLICATION)
     private List<Role> roles = new ArrayList<>();
 
     public Application(){}
