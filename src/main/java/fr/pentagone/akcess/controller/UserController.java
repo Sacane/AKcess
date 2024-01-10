@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.logging.Logger;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("api/v1/users")
 public class UserController {
     private static final Logger LOGGER = Logger.getLogger(UserController.class.getName());
     private final UserService userService;

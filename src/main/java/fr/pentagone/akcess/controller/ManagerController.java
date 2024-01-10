@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.logging.Logger;
 
 @RestController
-@RequestMapping("/managers")
+@RequestMapping("api/v1/managers")
 public class ManagerController {
     private final ManagerService managerService;
     private static final Logger LOGGER = Logger.getLogger(ManagerController.class.getName());
