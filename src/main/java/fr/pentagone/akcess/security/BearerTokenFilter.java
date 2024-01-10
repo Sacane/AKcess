@@ -36,6 +36,10 @@ public class BearerTokenFilter extends OncePerRequestFilter {
                 .exclude("ping")
                 .exclude("info")
                 .exclude("login");
+        if(request.getRequestURL().toString().contains(".png")){
+            filterChain.doFilter(request, response);
+            return;
+        }
         if(authorization == null) {
             var requestPath = request.getServletPath();
             if(spc.isExcluded(requestPath)) {
