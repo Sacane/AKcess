@@ -459,28 +459,33 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Role'
+                $ref: '#/components/schemas/Role'
         '400':
           description: Invalid ID supplied
         '404':
           description: Application not found
       security:
         - bearer: []
-  /v1/roles:
     patch:
       tags:
         - Role
       summary: Update an existing role
       description: Returns informations of a role
       operationId: updateRole
+      parameters:
+        - name: roleId
+          in: path
+          description: ID of role to patch
+          required: true
+          schema:
+            type: integer
+            format: int64
       requestBody:
         description: update an existent role
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Role'
+              $ref: '#/components/schemas/Role_patch'
         required: true
       responses:
         '200':
@@ -488,9 +493,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Role'
+                $ref: '#/components/schemas/Role'
         '400':
           description: the application Id or the role Id is incorrect
         '404':
@@ -520,7 +523,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Application_full'
+                  $ref: '#/components/schemas/Role'
         '404':
           description: The role does not exists
       security:
@@ -542,9 +545,9 @@ paths:
       requestBody:
         description: Creates a new role
         content:
-          text/plain:
+          application/json:
             schema:
-              type: string
+              $ref: '#/components/schemas/Role'
         required: true
       responses:
         '200':
@@ -552,9 +555,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Role'
+                $ref: '#/components/schemas/Role'
         '400':
           description: the application Id is incorrect
       security:
@@ -691,6 +692,16 @@ components:
           type: integer
           format: int64
           example: 1
+        label:
+          type: string
+          example: "functional_admin"
+        application_id:
+          type: integer
+          format: int64
+          example: 2
+    Role_patch:
+      type: object
+      properties:
         label:
           type: string
           example: "functional_admin"

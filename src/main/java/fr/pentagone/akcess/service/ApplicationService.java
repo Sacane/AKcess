@@ -5,7 +5,6 @@ import fr.pentagone.akcess.exception.HttpException;
 import fr.pentagone.akcess.repository.sql.Application;
 import fr.pentagone.akcess.repository.sql.ApplicationRepository;
 import jakarta.transaction.Transactional;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -31,7 +30,7 @@ public class ApplicationService {
         if (application.isEmpty()) {
             throw HttpException.badRequest("Application not found");
         }
-        return ResponseEntity.ok(new FullApplicationDTO(application.get().getId(), application.get().getLabel(), application.get().getUrl(), application.get().getUsers().stream().map(user -> new UserDTO(user.getUsername(), user.getLogin())).toList(), List.of(new RoleDTO(1, "DEFAULT"))));
+        return ResponseEntity.ok(new FullApplicationDTO(application.get().getId(), application.get().getLabel(), application.get().getUrl(), application.get().getUsers().stream().map(user -> new UserDTO(user.getUsername(), user.getLogin())).toList(), List.of(new RoleDTO(1, "DEFAULT", 1))));
     }
 
     @Transactional
