@@ -106,8 +106,8 @@ paths:
     post:
       tags:
         - Application
-      summary: Copy an app
-      description: Copy an app
+      summary: Copy an application
+      description: Copy an application
       parameters:
         - name: applicationId
           in: path
@@ -206,7 +206,7 @@ paths:
           description: Validation exception
       security:
         - bearer: []
-  /v1/applications/{applicationId}/users:
+  /v1/applications/{applicationId}/users/:
     get:
       tags:
         - Application
@@ -215,10 +215,15 @@ paths:
         - name: applicationId
           in: path
           description: Application Id to registered the user in
-          required: true
           schema:
             type: integer
             format: int64
+          required: true
+        - name: username
+          in: query
+          description: Username of the user searched
+          schema:
+            type: string
       responses:
         '400':
           description: The given password or username is blank, empty or null.
@@ -598,9 +603,11 @@ components:
       properties:
         name:
           type: string
+          description: "Name of the application"
           example: "MyAwesomeApplication"
         url:
           type: string
+          description: "Url of the applicaton"
           example: "http://myAwesomeApplication.com"
     Application_full:
       type: object
@@ -609,18 +616,23 @@ components:
         id:
           type: integer
           format: int64
+          description: "Id of the application"
           example: 10
         name:
           type: string
+          description: "Name of the application"
           example: "MyAwesomeApplication"
         root_url:
           type: string
+          description: "Url of the application"
           example: "https://myawesomeapplication.com/"
         users:
+          description: "Array representing the users who are registered"
           type: array
           items:
             $ref: '#/components/schemas/Credentials'
         roles:
+          description: "Array representing the roles created in the application"
           type: array
           items:
             $ref: '#/components/schemas/Role'
@@ -630,12 +642,15 @@ components:
       properties:
         name:
           type: string
-          example : "AKCESS"
+          example: "AKCESS"
+          description: "Name of the API"
         version:
           type: string
           example: "9.0.1"
+          description: "Current version of the API"
         cve:
           type: array
+          description: "Vulnerabilities know for this version"
           items:
             example: ["CVE-2023-45661", "CVE-2023-45623"]
     UserInput:
@@ -644,8 +659,10 @@ components:
       properties:
         username:
           type: string
+          description: "name of the user"
           example: Sacane
         credentials:
+          description: "Credentials associated to the user"
           $ref: '#/components/schemas/Credentials'
     UserOutput:
       type: object
@@ -653,9 +670,11 @@ components:
       properties:
         userId:
           type: integer
+          description: "Id associated to the user"
           example: 10
         username:
           type: string
+          description: "Name of the user"
           example: Sacane
     UserTokenRedirection:
       type: object
@@ -663,12 +682,15 @@ components:
       properties:
         userId:
           type: integer
+          description: "Id associated to the user"
           example: 1
         access_token:
           type: string
+          description: "Access token of the user"
           example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
         redirection_url:
           type: string
+          description: "Url of the application concerned"
           example: "http://client.myawesomeapplication.com"
     Role:
       type: object
@@ -677,12 +699,15 @@ components:
         id:
           type: integer
           format: int64
+          description: "Id of the role"
           example: 1
         label:
           type: string
+          description: "Name of the role"
           example: "functional_admin"
         application_id:
           type: integer
+          description: "Id of the application which owns the role"
           format: int64
           example: 2
     Manager:
@@ -691,8 +716,10 @@ components:
       properties:
         username:
           type: string
+          description: "Name of the manager"
           example: Sacane
         credentials:
+          description: "Credentials of the manager"
           $ref: '#/components/schemas/Credentials'
     Credentials:
       type: object
