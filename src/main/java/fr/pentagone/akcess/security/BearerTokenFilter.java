@@ -29,13 +29,13 @@ public class BearerTokenFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         LOGGER.info("Start bearer filter...");
         var authorization = request.getHeader("Authorization"); // JWT Token
-
         var spc = new SecurityPathConfigurer()
                 .exclude("auth")
                 .exclude("access")
                 .exclude("h2-console")
                 .exclude("ping")
-                .exclude("info");
+                .exclude("info")
+                .exclude("login");
         if(authorization == null) {
             var requestPath = request.getServletPath();
             if(spc.isExcluded(requestPath)) {

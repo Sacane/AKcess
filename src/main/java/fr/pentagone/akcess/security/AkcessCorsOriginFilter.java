@@ -1,5 +1,6 @@
 package fr.pentagone.akcess.security;
 
+import fr.pentagone.akcess.exception.HttpException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -21,6 +22,10 @@ public class AkcessCorsOriginFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
             return;
         }
+        if(origin.equals("http://localhost:8080")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
         if(origin.contains("editor.swagger")) {
             response.addHeader("Access-Control-Allow-Origin", origin);
             response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PATCH, DELETE, PUT");
@@ -28,7 +33,8 @@ public class AkcessCorsOriginFilter extends OncePerRequestFilter {
             response.setHeader("Access-Control-Allow-Headers", "content-type, x-gwt-module-base, x-gwt-permutation, clientid, longpush, Authorization");
             LOGGER.info("The origin has been accepted by the cors origin policy");
         } else {
-            LOGGER.severe("This origin is not accepted");
+            LOGGER.severe("This origin is not accepted with the origin");
+            throw HttpException.unauthorized("The origin is not accepted");
         }
         filterChain.doFilter(request, response);
     }

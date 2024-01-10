@@ -69,6 +69,9 @@ public class UserService{
     }
     @Transactional
     public ResponseEntity<UserIdDTO> save(int applicationId, UserInputDTO userDTO) {
+        if(userRepository.existsByLogin(userDTO.credentials().login())) {
+            throw HttpException.badRequest("The login is already used");
+        }
         var encodedPassword = passwordEncoder.encode(userDTO.credentials().password());
         var savedUser = new User(userDTO.username(), userDTO.credentials().login(), encodedPassword);
         var appResult = applicationRepository.findById(applicationId);
