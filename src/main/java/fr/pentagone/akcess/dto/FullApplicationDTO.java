@@ -14,6 +14,6 @@ public record FullApplicationDTO(
         @NotBlank
         String rootUrl,
         List<UserDTO> users,
-        List<RoleDTO> roles
+        List<RoleIdLabelDTO> roles
 ) {
 }

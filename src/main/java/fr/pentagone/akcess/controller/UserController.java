@@ -41,6 +41,11 @@ public class UserController {
     public ResponseEntity<UserIdTokenDTO> checkAcces(@PathVariable int applicationId, @RequestBody CredentialsDTO credentialsDTO){
         return userService.checkAccess(applicationId, credentialsDTO);
     }
+
+    @PatchMapping("/{userId}")
+    public ResponseEntity<UserIdDTO> patchUser(@PathVariable("userId") int userId, @RequestBody NewUserInputDTO newUserInputDTO){
+        return userService.updateUser(userId, newUserInputDTO);
+    }
 }
 
 // admin / admin

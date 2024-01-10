@@ -33,10 +33,10 @@ public class RoleController {
         return roleService.getAllApplicationRoles(applicationId);
     }
 
-    @DeleteMapping("/{roleId}/aplication/{applicationId}")
-    public ResponseEntity<String> deleteRoleFromApplication(@PathVariable("roleId") int roleId, @PathVariable("applicationId") int applicationId) {
-        LOGGER.info("Deleting role with id : " + roleId + " from application with id : " + applicationId);
-        return roleService.deleteRoleFromApplication(roleId, applicationId);
+    @DeleteMapping("/{roleId}")
+    public ResponseEntity<String> deleteRoleFromApplication(@PathVariable("roleId") int roleId) {
+        LOGGER.info("Deleting role with id : " + roleId);
+        return roleService.deleteRoleFromApplication(roleId, 0);
     }
 
     @PatchMapping("/{roleId}")

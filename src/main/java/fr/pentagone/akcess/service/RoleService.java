@@ -49,17 +49,10 @@ public class RoleService {
 
     @Transactional
     public ResponseEntity<String> deleteRoleFromApplication(int roleId, int applicationId){
-        var optionalApplication =  applicationRepository.findById(applicationId);
         if (roleRepository.findById(roleId).isEmpty()) {
             throw HttpException.notFound("Role not found");
         }
-        if (optionalApplication.isEmpty()) {
-            throw HttpException.notFound("Application not found");
-        }
-        var application = optionalApplication.get();
-        application.deleteRole(roleId);
         roleRepository.deleteById(roleId);
-        applicationRepository.save(application);
         return ResponseEntity.ok("Role has been deleted successfully.");
     }
 

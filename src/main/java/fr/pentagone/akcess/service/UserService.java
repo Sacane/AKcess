@@ -83,4 +83,16 @@ public class UserService{
         app.addUser(savedUser);
         return ResponseEntity.ok(new UserIdDTO(savedUser.getId(), savedUser.getUsername()));
     }
+
+    @Transactional
+    public ResponseEntity<UserIdDTO> updateUser(int userId, NewUserInputDTO newUserInputDTO) {
+        var userOpt = userRepository.findById(userId);
+        if(userOpt.isEmpty()) throw HttpException.notFound("User not found");
+        var user = userOpt.get();
+        user.setUsername(newUserInputDTO.newUsername());
+        var newPwd = passwordEncoder.encode(newUserInputDTO.newPassword());
+        user.setPassword(newPwd);
+        var saved = userRepository.save(user);
+        return ResponseEntity.ok(new UserIdDTO(saved.getId(), saved.getUsername()));
+    }
 }

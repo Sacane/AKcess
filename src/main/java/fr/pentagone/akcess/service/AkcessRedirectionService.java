@@ -10,13 +10,12 @@ import org.springframework.stereotype.Service;
 @Service
 public class AkcessRedirectionService {
     private final UserRepository userRepository;
-    private final ApplicationRepository applicationRepository;
+
     private final PasswordEncoder passwordEncoder;
 
-    public AkcessRedirectionService(UserRepository userRepository, PasswordEncoder passwordEncoder, ApplicationRepository applicationRepository) {
+    public AkcessRedirectionService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
-        this.applicationRepository = applicationRepository;
     }
 
     @Transactional

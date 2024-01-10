@@ -26,13 +26,14 @@ public class ApplicationService {
         return ResponseEntity.ok(applicationRepository.findAll().stream().map(app -> new LightApplicationDTO(app.getId(), app.getLabel(), app.getUrl())).toList());
     }
 
+    @Transactional
     public ResponseEntity<FullApplicationDTO> getApplication(int applicationId) {
         var application = applicationRepository.findByIdWithUsers(applicationId);
         System.out.println(application);
         if (application.isEmpty()) {
             throw HttpException.badRequest("Application not found");
         }
-        return ResponseEntity.ok(new FullApplicationDTO(application.get().getId(), application.get().getLabel(), application.get().getUrl(), application.get().getUsers().stream().map(user -> new UserDTO(user.getUsername(), user.getLogin())).toList(), List.of(new RoleDTO(1, "DEFAULT", 1))));
+        return ResponseEntity.ok(new FullApplicationDTO(application.get().getId(), application.get().getLabel(), application.get().getUrl(), application.get().getUsers().stream().map(user -> new UserDTO(user.getUsername(), user.getLogin())).toList(), application.get().getRoles().stream().map(role -> new RoleIdLabelDTO(role.getId(), role.getName())).toList()));
     }
 
     @Transactional

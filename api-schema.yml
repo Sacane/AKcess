@@ -36,21 +36,7 @@ tags:
     description: Global data of the current Akcess server
   - name: Role
     description: Role aims to identify the application's users.
-  - name: Ping
-    description: Endpoints only used to check the availability of the Akcess server, always returning the same value when calls it.
 paths:
-  /v1/ping:
-    get:
-      tags:
-        - Ping
-      summary: Get a response from the Akcess server instance
-      responses:
-        '200':
-          description: Akcess server has successfully get your ping request, sent you back a pong response.
-          content:
-            text/plain:
-              example: 'pong'
-
   /v1/applications:
     get:
       tags:
@@ -309,7 +295,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Credentials'
+              $ref: '#/components/schemas/NewUserInput'
       parameters:
         - name: userID
           in: path
@@ -425,33 +411,6 @@ paths:
       security:
         - bearer: []
   /v1/roles/{roleId}:
-    get:
-      tags:
-        - Role
-      summary: find role by ID
-      description: Returns informations of a role
-      operationId: getRole
-      parameters:
-        - name: roleId
-          in: path
-          description: ID of role to return
-          required: true
-          schema:
-            type: integer
-            format: int64
-      responses:
-        '200':
-          description: successful operation
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Role'
-        '400':
-          description: Invalid ID supplied
-        '404':
-          description: Application not found
-      security:
-        - bearer: []
     patch:
       tags:
         - Role
@@ -471,7 +430,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Role_patch'
+              $ref: '#/components/schemas/LightRole'
         required: true
       responses:
         '200':
@@ -479,14 +438,60 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Role'
+                $ref: '#/components/schemas/LightRole'
         '400':
           description: the application Id or the role Id is incorrect
         '404':
           description: the application Id or the role Id is not found
       security:
         - bearer: []
-  /v1/roles/{applicationId}:
+    delete:
+      tags:
+        - Role
+      summary: Delete a role from an application
+      description: Delete a role by its Id from an application from the given's ID
+      parameters:
+        - name: roleId
+          in: path
+          description: ID of the role
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: the role has been deleted successfully
+        '404':
+          description: The role or the application does not exists
+      security:
+        - bearer: []
+  /v1/roles/applications/{applicationId}:
+    get:
+      tags:
+        - Role
+      summary: Get all the registered application's roles
+      description: Get all the roles from an application
+      operationId: listRole
+      parameters:
+        - name: applicationId
+          in: path
+          description: ID of the application we wish the roles of
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: The role has successfully been retrieved
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Role'
+        '404':
+          description: The role does not exists
+      security:
+        - bearer: []
     post:
       tags:
         - Role
@@ -519,58 +524,7 @@ paths:
           description: the application Id is incorrect
       security:
         - bearer: []
-  /v1/roles/applications/{applicationId}:
-    get:
-      tags:
-        - Role
-      summary: Get all the registered application's roles
-      description: Get all the roles from an application
-      operationId: listRole
-      parameters:
-        - name: applicationId
-          in: path
-          description: ID of the application we wish the roles of
-          required: true
-          schema:
-            type: integer
-            format: int64
-      responses:
-        '200':
-          description: The role has successfully been retrieved
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Role'
-        '404':
-          description: The role does not exists
-      security:
-        - bearer: []
-  /v1/roles/{roleId}/application/{applicationId}:
-    delete:
-      tags:
-        - Role
-      summary: Delete a role from an application
-      description: Delete a role by its Id from an application from the given's ID
-      parameters:
-        - name: roleId
-          in: path
-          description: ID of the role
-          required: true
-          schema:
-            type: integer
-        - name: applicationId
-          in: path
-          description: ID of the application's role
-          required: true
-          schema:
-            type: integer
-      responses:
-        '200':
-          description: the role has been deleted successfully
-        '404':
-          description: The role or the application does not exists
+
 components:
   responses:
     JwtResponse:
@@ -581,7 +535,7 @@ components:
             token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
   schemas:
     Application_post:
-      description: Light representation of an application to post.
+      description: Representation of an application with its idempotency key.
       type: object
       properties:
         idempotencyKey:
@@ -594,7 +548,7 @@ components:
           type: string
           example: "http://myAwesomeApplication.com"
     Application_patch:
-      description: Light representation of an application to patch.
+      description: Very light representation of an application with its minimal informations.
       type: object
       properties:
         name:
@@ -675,7 +629,7 @@ components:
           $ref: '#/components/schemas/Credentials'
     UserOutput:
       type: object
-      description: User representation to share to the outside of the Akcess representation, giving its id, and its username.
+      description: User representation to share to the outside of the Akcess instance, giving its id, and its username.
       properties:
         userId:
           type: integer
@@ -685,6 +639,26 @@ components:
           type: string
           description: "Name of the user"
           example: Sacane
+    NewUserInput:
+      type: object
+      description: User data to patch into the Akcess server
+      properties:
+        newUsername:
+          type: string
+          description: "new name of the user to represent it into the application (not the login)"
+          example: "Van doe"
+        newPassword:
+          type: string
+          description: "new Password to change of the user"
+          example: "xx7182hudfzuahdE123&"
+    LightRole:
+      type: object
+      description: "A simple label for a role"
+      properties:
+        label:
+          type: string
+          description: "label of the role"
+          example: "USER"
     UserTokenRedirection:
       type: object
       description: Represent user by its id, its access token and the url where the user must be redirected to.
