@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Page d'erreur</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      height: 100vh;
+      background-color: #f4f4f4;
+    }
+
+    .akcess-title {
+      color: #d9534f;
+      text-align: center;
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+
+    .error-text {
+      color: #d9534f;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+<h1 class="akcess-title">AKCESS</h1>
+<p class="error-text" th:text="${errorMessage}"></p>
+
+</body>
+</html>
