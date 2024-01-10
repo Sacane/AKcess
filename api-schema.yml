@@ -74,7 +74,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Application_full'
+                  $ref: '#/components/schemas/Application_light'
       security:
         - bearer: []
     post:
@@ -189,7 +189,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Application_full'
+              $ref: '#/components/schemas/Application_patch'
         required: true
       responses:
         '200':
@@ -197,7 +197,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Application_full'
+                $ref: '#/components/schemas/Application_light'
         '400':
           description: Invalid ID supplied
         '404':
@@ -592,10 +592,23 @@ components:
           example:
             token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
   schemas:
+    Application_patch:
+      description: Light representation of an application to patch.
+      type: object
+      properties:
+        name:
+          type: string
+          example: "MyAwesomeApplication"
+        url:
+          type: string
+          example: "http://myAwesomeApplication.com"
     Application_light:
       description: Light representation of an application with only its Id and its name.
       type: object
       properties:
+        applicationId:
+          type: integer
+          example: "1"
         name:
           type: string
           example: "MyAwesomeApplication"

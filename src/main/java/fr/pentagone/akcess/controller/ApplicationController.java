@@ -1,8 +1,6 @@
 package fr.pentagone.akcess.controller;
 
-import fr.pentagone.akcess.dto.LightApplicationDTO;
-import fr.pentagone.akcess.dto.LightApplicationIdDTO;
-import fr.pentagone.akcess.dto.UserIdDTO;
+import fr.pentagone.akcess.dto.*;
 import fr.pentagone.akcess.repository.sql.Application;
 import fr.pentagone.akcess.service.ApplicationService;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +19,27 @@ public class ApplicationController {
     public ApplicationController(ApplicationService applicationService){
         this.applicationService = applicationService;
     }
+
+    @GetMapping
+    public ResponseEntity<List<LightApplicationDTO>> listApplication() {
+        return applicationService.listApplication();
+    }
+
+    @GetMapping("/{applicationId}")
+    public ResponseEntity<FullApplicationDTO> getApplication(@PathVariable("applicationId") int applicationId) {
+        return applicationService.getApplication(applicationId);
+    }
+
+    @PatchMapping("/{applicationId}")
+    public ResponseEntity<LightApplicationDTO> patchApplication(@RequestBody PatchApplicationDTO applicationDTO, @PathVariable("applicationId") int applicationId) {
+        return applicationService.patchApplication(applicationId, applicationDTO);
+    }
+
+    @DeleteMapping("/{applicationId}")
+    public ResponseEntity<Void> deleteApplication(@PathVariable("applicationId") int applicationId) {
+        return applicationService.deleteApplication(applicationId);
+    }
+
     @PostMapping
     public ResponseEntity<LightApplicationIdDTO> addApplication(@RequestBody LightApplicationDTO applicationDTO){
         LOGGER.info("Trying to save an application..." + applicationDTO);

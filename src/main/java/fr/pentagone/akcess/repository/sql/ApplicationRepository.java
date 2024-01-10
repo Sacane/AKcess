@@ -9,6 +9,6 @@ import java.util.Optional;
 public interface ApplicationRepository extends JpaRepository<Application, Integer> {
     Optional<Application> findByLabel(String label);
 
-    @Query("SELECT a FROM Application a JOIN FETCH a.users WHERE a.id = :appId")
+    @Query("SELECT a FROM Application a LEFT JOIN FETCH a.users WHERE a.id = :appId")
     Optional<Application> findByIdWithUsers(@Param("appId") int appId);
 }
