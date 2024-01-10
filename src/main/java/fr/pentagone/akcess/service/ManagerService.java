@@ -45,6 +45,7 @@ public class ManagerService {
 
     public ResponseEntity<TokenDTO> verify(String login, String password) {
         var managerResult = managerRepository.findByLogin(login);
+        if(login.isEmpty() || password.isEmpty()) throw HttpException.badRequest("The given password or username is blank, empty or null. Also if the password does not correspond to the templates.");
         if(managerResult.isPresent()){
             var manager = managerResult.get();
             var isPasswordOk = passwordEncoder.verify(password, manager.getPassword());
@@ -53,9 +54,9 @@ public class ManagerService {
                 sessionManager.registerSession(manager.getId(), jwtToken.accessToken());
                 return ok(new TokenDTO(jwtToken.jwt()));
             }
-            else return badRequest().build();
+            else throw HttpException.unauthorized("Wrong password Given");
         }
-        return badRequest().build();
+        throw HttpException.notFound("The login is not registered");
     }
 
     @Transactional

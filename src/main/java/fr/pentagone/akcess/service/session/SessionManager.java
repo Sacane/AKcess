@@ -20,7 +20,6 @@ public class SessionManager {
         synchronized (lock){
             var session = sessionManager.get(id);
             if(session != null) {
-                System.out.println(session);
                 return session.contains(token);
             }
             return false;

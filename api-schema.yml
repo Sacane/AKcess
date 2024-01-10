@@ -2,15 +2,19 @@ openapi: 3.0.3
 info:
   title: Akcess - Rest documentation 0.1.0
   description: |-
-    API REST project Akcess documentation
     
-    This documentation describes an API designed to manage authentication and access rights for a collection of applications.
-    
+    This documentation describes an API REST designed to manage authentication and access rights for a collection of applications.
+    Akcess is a robust security solution designed to serve as a secure proxy and authentication gateway for your applications. It provides a layer of protection for your resources, ensuring secure and controlled access to your services.
+    ## Manager
     A 'manager' represents an entity capable of overseeing the Akcess server instance. A manager is created at the beginning of this instance and can subsequently enable the creation of others with varying degrees of permissions.
     
-    Each user possesses a username/password pair for connecting to an application, with each user exclusively associated with a single application. Akcess centrally manages all users in one location.
-    
+    ## Application
+    An application represent the software you want to link Akcess to, an application can manage its users that can access to it and the role the users can wear.
+    ## Users
+    Each user possesses a peer of username/password to login into an application, with each user exclusively associated with a single application. Akcess centrally manages all users in one location.
+    ## Roles
     Roles define the access rights of a user within an application.
+    
     
     This Api can ask for a more global API of Pentagon to retrieves somes datas about this server instance.
 
@@ -23,12 +27,9 @@ servers:
   - url: http://localhost:8080/api/
 tags:
   - name: Manager
-    description: A couple of credentials login and password used to represent a manager of the Akcess server
+    description: Entity which has the rights to perform all actions over the Akcess instance.
   - name: Application
-    description: Everything to manage your applications
-    externalDocs:
-      description: Find out more
-      url: http://swagger.io
+    description: Use as a container of its users and roles across the Akcess instance.
   - name: User
     description: Entity subscribed to a registered application
   - name: info
@@ -383,8 +384,10 @@ paths:
           $ref: '#/components/responses/JwtResponse'
         '400':
           description: The given password or username is blank, empty or null. Also if the password does not correspond to the templates.
-        '403':
-          description: Wrong rights to ask for an Access token
+        '401':
+          description: Invalid login or password given
+        '404':
+          description: The login is not registered
   /v1/managers:
     post:
       tags:
@@ -400,8 +403,8 @@ paths:
       responses:
         '200':
           description: OK
-        '400':
-          description: Invalid credential
+        '401':
+          description: Invalid credential given
         '403':
           description: Wrong rights to do this operation
   /v1/managers/{managerId}:
