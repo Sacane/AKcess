@@ -24,8 +24,14 @@ public class ManagerController {
 
 
     @PostMapping
-    public ResponseEntity<ManagerOutputDTO> create(@RequestBody ManagerInputDTO managerInputDTO) {
+    public ResponseEntity<ManagerOutputDTO> createManager(@RequestBody ManagerInputDTO managerInputDTO) {
         LOGGER.info("Create a manager : " + managerInputDTO.username());
         return managerService.create(managerInputDTO);
+    }
+
+    @DeleteMapping("{managerId}")
+    public ResponseEntity<Void> deleteManager(@PathVariable("managerId") int managerId) {
+        LOGGER.info("Delete a manager");
+        return managerService.delete(managerId);
     }
 }

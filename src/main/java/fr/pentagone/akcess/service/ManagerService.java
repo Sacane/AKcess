@@ -3,6 +3,7 @@ package fr.pentagone.akcess.service;
 import fr.pentagone.akcess.dto.ManagerInputDTO;
 import fr.pentagone.akcess.dto.ManagerOutputDTO;
 import fr.pentagone.akcess.dto.TokenDTO;
+import fr.pentagone.akcess.exception.HttpException;
 import fr.pentagone.akcess.repository.sql.Manager;
 import fr.pentagone.akcess.repository.sql.ManagerRepository;
 import fr.pentagone.akcess.service.session.SessionManager;
@@ -63,5 +64,22 @@ public class ManagerService {
         var manager = new Manager(managerInputDTO.username(), managerInputDTO.credentials().login(), password);
         var managerSaved = managerRepository.save(manager);
         return ResponseEntity.ok(new ManagerOutputDTO(managerSaved.getId(), managerSaved.getName()));
+    }
+
+    @Transactional
+    public ResponseEntity<Void> delete(Integer managerId) {
+        var superManagerOpt = managerRepository.findByName("MainAdmin");
+        if(superManagerOpt.isEmpty()) {
+            throw HttpException.badRequest("The main admin doesn't exists");
+        }
+        var superManager = superManagerOpt.get();
+        if(superManager.getId().equals(managerId)) {
+            throw HttpException.badRequest("You cannot delete the superAdmin");
+        }
+        if(managerRepository.existsById(managerId)) {
+            managerRepository.deleteById(managerId);
+            ResponseEntity.ok().build();
+        }
+        throw HttpException.notFound("manager not found");
     }
 }
