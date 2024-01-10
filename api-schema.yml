@@ -88,7 +88,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Application_light'
+              $ref: '#/components/schemas/Application_post'
         required: true
       responses:
         '200':
@@ -598,6 +598,19 @@ components:
           example:
             token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
   schemas:
+    Application_post:
+      description: Light representation of an application to post.
+      type: object
+      properties:
+        idempotencyKey:
+          type: integer
+          example: 1234
+        name:
+          type: string
+          example: "MyAwesomeApplication"
+        url:
+          type: string
+          example: "http://myAwesomeApplication.com"
     Application_patch:
       description: Light representation of an application to patch.
       type: object

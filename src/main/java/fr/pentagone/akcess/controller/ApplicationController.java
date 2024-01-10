@@ -41,7 +41,7 @@ public class ApplicationController {
     }
 
     @PostMapping
-    public ResponseEntity<LightApplicationIdDTO> addApplication(@RequestBody LightApplicationDTO applicationDTO){
+    public ResponseEntity<LightApplicationIdDTO> addApplication(@RequestBody PostApplicationDTO applicationDTO) {
         LOGGER.info("Trying to save an application..." + applicationDTO);
         return applicationService.addApplication(applicationDTO);
     }

@@ -8,12 +8,15 @@ import jakarta.transaction.Transactional;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
 @Service
 public class ApplicationService {
     private final ApplicationRepository applicationRepository;
+    private final ConcurrentHashMap<Integer, Application> idempotencyPost = new ConcurrentHashMap<>();
     private static final Logger LOGGER = Logger.getLogger(ApplicationService.class.getName());
 
     public ApplicationService(ApplicationRepository applicationRepository){
@@ -67,11 +70,16 @@ public class ApplicationService {
         return ResponseEntity.ok().build();
     }
 
-    public ResponseEntity<LightApplicationIdDTO> addApplication(LightApplicationDTO dto){
+    public ResponseEntity<LightApplicationIdDTO> addApplication(PostApplicationDTO dto) {
         LOGGER.info("Saving a new application " + dto);
+        if (idempotencyPost.containsKey(dto.idempotencyKey())) {
+            var application = idempotencyPost.get(dto.idempotencyKey());
+            return ResponseEntity.ok(new LightApplicationIdDTO(application.getId(), application.getLabel(), application.getUrl()));
+        }
         var duplicated = applicationRepository.findByLabel(dto.name());
         if(duplicated.isPresent()) throw HttpException.badRequest("There already are an application with the label " + dto.name());
         var savedApp = applicationRepository.save(new Application(dto.name(), dto.url()));
+        idempotencyPost.put(dto.idempotencyKey(), savedApp);
         return ResponseEntity.ok(new LightApplicationIdDTO(savedApp.getId(), savedApp.getLabel(), savedApp.getUrl()));
     }
 
