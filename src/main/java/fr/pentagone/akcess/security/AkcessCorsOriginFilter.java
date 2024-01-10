@@ -23,7 +23,7 @@ public class AkcessCorsOriginFilter extends OncePerRequestFilter {
         }
         if(origin.contains("editor.swagger")) {
             response.addHeader("Access-Control-Allow-Origin", origin);
-            response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PATCH");
+            response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PATCH, DELETE, PUT");
             response.setHeader("Access-Control-Allow-Credentials", "true");
             response.setHeader("Access-Control-Allow-Headers", "content-type, x-gwt-module-base, x-gwt-permutation, clientid, longpush, Authorization");
             LOGGER.info("The origin has been accepted by the cors origin policy");

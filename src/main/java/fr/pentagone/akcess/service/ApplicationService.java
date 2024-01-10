@@ -1,13 +1,11 @@
 package fr.pentagone.akcess.service;
 
-import fr.pentagone.akcess.dto.FullApplicationDTO;
-import fr.pentagone.akcess.dto.LightApplicationDTO;
-import fr.pentagone.akcess.dto.LightApplicationIdDTO;
-import fr.pentagone.akcess.dto.UserIdDTO;
+import fr.pentagone.akcess.dto.*;
 import fr.pentagone.akcess.exception.HttpException;
 import fr.pentagone.akcess.repository.sql.Application;
 import fr.pentagone.akcess.repository.sql.ApplicationRepository;
 import jakarta.transaction.Transactional;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +20,54 @@ public class ApplicationService {
     public ApplicationService(ApplicationRepository applicationRepository){
         this.applicationRepository = applicationRepository;
     }
+
+    public ResponseEntity<List<LightApplicationDTO>> listApplication() {
+        return ResponseEntity.ok(applicationRepository.findAll().stream().map(app -> new LightApplicationDTO(app.getId(), app.getLabel(), app.getUrl())).toList());
+    }
+
+    public ResponseEntity<FullApplicationDTO> getApplication(int applicationId) {
+        var application = applicationRepository.findByIdWithUsers(applicationId);
+        System.out.println(application);
+        if (application.isEmpty()) {
+            throw HttpException.badRequest("Application not found");
+        }
+        return ResponseEntity.ok(new FullApplicationDTO(application.get().getId(), application.get().getLabel(), application.get().getUrl(), application.get().getUsers().stream().map(user -> new UserDTO(user.getUsername(), user.getLogin())).toList(), List.of(new RoleDTO(1, "DEFAULT"))));
+    }
+
+    @Transactional
+    public ResponseEntity<LightApplicationDTO> patchApplication(int applicationId, PatchApplicationDTO applicationDTO) {
+        var optionalApplication = applicationRepository.findById(applicationId);
+        if (optionalApplication.isEmpty()) {
+            throw HttpException.badRequest("Application not found");
+        }
+        var application = optionalApplication.get();
+        if (applicationDTO.name() != null) {
+            var labelApplication = applicationRepository.findByLabel(applicationDTO.name());
+            if (labelApplication.isEmpty()) {
+                application.setLabel(applicationDTO.name());
+            }
+            else {
+                throw HttpException.forbidden("Application with this label already exist");
+            }
+        }
+        if (applicationDTO.url() != null) {
+            application.setUrl(applicationDTO.url());
+        }
+        return ResponseEntity.ok(new LightApplicationDTO(application.getId(), application.getLabel(), application.getUrl()));
+    }
+
+    @Transactional
+    public ResponseEntity<Void> deleteApplication(int applicationId) {
+        System.out.println(applicationId);
+        var optionalApplication = applicationRepository.findById(applicationId);
+        if (optionalApplication.isEmpty()) {
+            throw HttpException.badRequest("Application not found");
+        }
+        var application = optionalApplication.get();
+        applicationRepository.delete(application);
+        return ResponseEntity.ok().build();
+    }
+
     public ResponseEntity<LightApplicationIdDTO> addApplication(LightApplicationDTO dto){
         LOGGER.info("Saving a new application " + dto);
         var duplicated = applicationRepository.findByLabel(dto.name());
