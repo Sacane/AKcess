@@ -52,4 +52,9 @@ public class Application extends AbstractEntity<Integer>{
         this.users.add(user);
         user.setApplication(this);
     }
+
+    public void addRole(Role role) {
+        this.roles.add(role);
+        role.setApplication(this);
+    }
 }

@@ -8,7 +8,6 @@ import jakarta.transaction.Transactional;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
@@ -83,10 +82,13 @@ public class ApplicationService {
         return ResponseEntity.ok(new LightApplicationIdDTO(savedApp.getId(), savedApp.getLabel(), savedApp.getUrl()));
     }
 
-    public ResponseEntity<Application> applicationById(int applicationId){
+    public ResponseEntity<LightApplicationDTO> duplicateApplication(int applicationId){
         var optApp = applicationRepository.findById(applicationId);
         if(optApp.isEmpty()) throw HttpException.badRequest("Application not found");
-        return ResponseEntity.ok(optApp.get());
+        var app = optApp.get();
+        var newApp = new Application(app.getLabel(), app.getUrl());
+        var saved = applicationRepository.save(newApp);
+        return ResponseEntity.ok(new LightApplicationDTO(saved.getId(), saved.getLabel(), saved.getUrl()));
     }
 
     @Transactional

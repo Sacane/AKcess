@@ -1,7 +1,6 @@
 package fr.pentagone.akcess.controller;
 
 import fr.pentagone.akcess.dto.*;
-import fr.pentagone.akcess.repository.sql.Application;
 import fr.pentagone.akcess.service.ApplicationService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -52,8 +51,8 @@ public class ApplicationController {
     }
 
     @PostMapping("/{applicationId}/duplicate")
-    public ResponseEntity<Application> duplicateApplication(@PathVariable int applicationId){
-        return applicationService.applicationById(applicationId);
+    public ResponseEntity<LightApplicationDTO> duplicateApplication(@PathVariable int applicationId){
+        return applicationService.duplicateApplication(applicationId);
     }
 
 }

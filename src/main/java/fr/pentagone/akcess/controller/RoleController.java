@@ -1,15 +1,11 @@
 package fr.pentagone.akcess.controller;
 
 import fr.pentagone.akcess.dto.RoleDTO;
+import fr.pentagone.akcess.dto.RoleSaveDTO;
+import fr.pentagone.akcess.repository.sql.Role;
 import fr.pentagone.akcess.service.RoleService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.logging.Logger;
 import java.util.List;
@@ -31,7 +27,7 @@ public class RoleController {
         return roleService.getRole(roleId);
     }
 
-    @GetMapping("/{applicationId}")
+    @GetMapping("/applications/{applicationId}")
     public ResponseEntity<List<RoleDTO>> getAllApplicationRoles(@PathVariable("applicationId") int applicationId) {
         LOGGER.info("Getting infos of roles with application id : " + applicationId);
         return roleService.getAllApplicationRoles(applicationId);
@@ -49,5 +45,10 @@ public class RoleController {
         return roleService.updateRole(roleId, inputRole);
     }
 
+    @PostMapping("/{applicationId}")
+    public ResponseEntity<RoleDTO> create(@PathVariable("applicationId") int applicationId, @RequestBody RoleSaveDTO roleSaveDTO) {
+        LOGGER.info("creating a role");
+        return roleService.createRole(applicationId, roleSaveDTO);
+    }
 
 }

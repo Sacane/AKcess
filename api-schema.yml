@@ -11,9 +11,9 @@ info:
     ## Application
     An application represent the software you want to link Akcess to, an application can manage its users that can access to it and the role the users can wear.
     ## Users
-    Each user possesses a peer of username/password to login into an application, with each user exclusively associated with a single application. Akcess centrally manages all users in one location.
+    Each user possesses a peer of username/password to login into an application, with each user exclusively associated with a single application. Akcess centrally manages all users in one location. A user cannot login to another application.
     ## Roles
-    Roles define the access rights of a user within an application.
+    Roles define the access rights of a user within an application. A role cannot be use by another application.
     
     
     This Api can ask for a more global API of Pentagon to retrieves somes datas about this server instance.
@@ -102,28 +102,6 @@ paths:
           description: Invalid input
       security:
         - bearer: []
-
-  /v1/applications/{applicationId}/duplicate:
-    post:
-      tags:
-        - Application
-      summary: Copy an application
-      description: Copy an application
-      parameters:
-        - name: applicationId
-          in: path
-          description: Application id to copy
-          required: true
-          schema:
-            type: integer
-            format: int64
-      responses:
-        '400':
-          description: Invalid application value
-        '404':
-          description: Application not found
-      security:
-        - bearer: []
   /v1/applications/{applicationId}:
     get:
       tags:
@@ -207,7 +185,7 @@ paths:
           description: Validation exception
       security:
         - bearer: []
-  /v1/applications/{applicationId}/users/:
+  /v1/applications/{applicationId}/users:
     get:
       tags:
         - Application
@@ -509,10 +487,43 @@ paths:
       security:
         - bearer: []
   /v1/roles/{applicationId}:
+    post:
+      tags:
+        - Role
+      summary: Add a new role for an existing application
+      description: Creates a new role giving the role name and the application target Id
+      operationId: addRole
+      parameters:
+        - name: applicationId
+          in: path
+          description: ID of the application we wish the roles of
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: Creates a new role
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Role_patch'
+        required: true
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Role'
+        '400':
+          description: the application Id is incorrect
+      security:
+        - bearer: []
+  /v1/roles/applications/{applicationId}:
     get:
       tags:
         - Role
-      summary: Get all the registered applications
+      summary: Get all the registered application's roles
       description: Get all the roles from an application
       operationId: listRole
       parameters:
@@ -534,38 +545,6 @@ paths:
                   $ref: '#/components/schemas/Role'
         '404':
           description: The role does not exists
-      security:
-        - bearer: []
-    post:
-      tags:
-        - Role
-      summary: Add a new role for an existing application
-      description: Creates a new role giving the role name and the application target Id
-      operationId: addRole
-      parameters:
-        - name: applicationId
-          in: path
-          description: ID of the application we wish the roles of
-          required: true
-          schema:
-            type: integer
-            format: int64
-      requestBody:
-        description: Creates a new role
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Role'
-        required: true
-      responses:
-        '200':
-          description: successful operation
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Role'
-        '400':
-          description: the application Id is incorrect
       security:
         - bearer: []
   /v1/roles/{roleId}/application/{applicationId}:

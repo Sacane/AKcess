@@ -1,7 +1,9 @@
 package fr.pentagone.akcess.service;
 
 import fr.pentagone.akcess.dto.RoleDTO;
+import fr.pentagone.akcess.dto.RoleSaveDTO;
 import fr.pentagone.akcess.exception.HttpException;
+import fr.pentagone.akcess.repository.sql.Role;
 import fr.pentagone.akcess.repository.sql.RoleRepository;
 import fr.pentagone.akcess.repository.sql.ApplicationRepository;
 import jakarta.transaction.Transactional;
@@ -23,6 +25,7 @@ public class RoleService {
 
     }
 
+    @Transactional
     public ResponseEntity<RoleDTO> getRole(int roleId) {
         var optionalRole = roleRepository.findById(roleId);
         if (optionalRole.isEmpty()) {
@@ -33,6 +36,7 @@ public class RoleService {
         return ResponseEntity.ok(new RoleDTO(role.getId(), role.getName(), role.getApplication().getId()));
     }
 
+    @Transactional
     public ResponseEntity<List<RoleDTO>> getAllApplicationRoles(int applicationId) {
         var optionalApplication =  applicationRepository.findById(applicationId);
         if (optionalApplication.isEmpty()) {
@@ -78,4 +82,14 @@ public class RoleService {
 
     }
 
+    @Transactional
+    public ResponseEntity<RoleDTO> createRole(int applicationId, RoleSaveDTO roleSaveDTO) {
+        var appOpt = applicationRepository.findById(applicationId);
+        if(appOpt.isEmpty()) throw HttpException.notFound("The application does not exists");
+        var app = appOpt.get();
+        var role = new Role(roleSaveDTO.label());
+        var saved = roleRepository.save(role);
+        app.addRole(role);
+        return ResponseEntity.ok(new RoleDTO(saved.getId(), saved.getName(), saved.getApplication().getId()));
+    }
 }

@@ -13,9 +13,8 @@ public class Role extends AbstractEntity<Integer>{
     private Application application;
     public Role(){}
 
-    public Role(String value, Application application){
+    public Role(String value){
         this.name = value;
-        this.application = application;
     }
 
     public String getName() {
