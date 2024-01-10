@@ -30,6 +30,12 @@ public class ApplicationService {
         return ResponseEntity.ok(new LightApplicationIdDTO(savedApp.getId(), savedApp.getLabel(), savedApp.getUrl()));
     }
 
+    public ResponseEntity<Application> applicationById(int applicationId){
+        var optApp = applicationRepository.findById(applicationId);
+        if(optApp.isEmpty()) throw HttpException.badRequest("Application not found");
+        return ResponseEntity.ok(optApp.get());
+    }
+
     @Transactional
     public ResponseEntity<List<UserIdDTO>> retrieveUsers(int applicationId) {
         var appResult = applicationRepository.findByIdWithUsers(applicationId);

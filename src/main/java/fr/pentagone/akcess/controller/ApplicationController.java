@@ -3,6 +3,7 @@ package fr.pentagone.akcess.controller;
 import fr.pentagone.akcess.dto.LightApplicationDTO;
 import fr.pentagone.akcess.dto.LightApplicationIdDTO;
 import fr.pentagone.akcess.dto.UserIdDTO;
+import fr.pentagone.akcess.repository.sql.Application;
 import fr.pentagone.akcess.service.ApplicationService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,4 +31,10 @@ public class ApplicationController {
     public ResponseEntity<List<UserIdDTO>> retrieveAllAppUsers(@PathVariable("applicationId") int applicationId){
         return applicationService.retrieveUsers(applicationId);
     }
+
+    @PostMapping("/{applicationId}/duplicate")
+    public ResponseEntity<Application> duplicateApplication(@PathVariable int applicationId){
+        return applicationService.applicationById(applicationId);
+    }
+
 }

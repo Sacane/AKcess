@@ -37,6 +37,12 @@ public class UserService{
         throw HttpException.badRequest("User not found");
     }
 
+    public ResponseEntity<String> checkAccess(int applicationId){
+        var optApp = applicationRepository.findById(applicationId);
+        if(optApp.isEmpty()) throw HttpException.badRequest("Application not found");
+        return ResponseEntity.ok("Acces granted");
+    }
+
     @Transactional
     public ResponseEntity<UserIdDTO> getUserInfo(int userId){
         var userResult = userRepository.findById(userId);

@@ -37,4 +37,10 @@ public class UserController {
         LOGGER.info("Getting info of the user with the id : " + userId);
         return userService.getUserInfo(userId);
     }
+
+    @PostMapping("/{applicationId}/acces")
+    public ResponseEntity<String> checkAcces(@PathVariable int applicationId){
+        return userService.checkAccess(applicationId);
+    }
+
 }
