@@ -12,6 +12,7 @@ public class Application extends AbstractEntity<Integer>{
     private String url;
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = User_.APPLICATION)
     private List<User> users = new ArrayList<>();
+    private List<Role> roles = new ArrayList<>();
 
     public Application(){}
     public Application(String label, String url){
@@ -38,6 +39,11 @@ public class Application extends AbstractEntity<Integer>{
 
     public List<User> getUsers() {
         return users;
+    }
+    public List<Role> getRoles() {return roles;}
+
+    public void deleteRole(int roleId){
+        this.roles = this.roles.stream().filter(role -> role.getId() != roleId).toList();
     }
 
     public void addUser(User user){
