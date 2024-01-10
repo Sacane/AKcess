@@ -11,4 +11,6 @@ public interface ApplicationRepository extends JpaRepository<Application, Intege
 
     @Query("SELECT a FROM Application a LEFT JOIN FETCH a.users WHERE a.id = :appId")
     Optional<Application> findByIdWithUsers(@Param("appId") int appId);
+
+    Optional<Application> findByLabelContainingIgnoreCase(String label);
 }
