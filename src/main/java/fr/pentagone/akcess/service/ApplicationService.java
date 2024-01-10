@@ -10,14 +10,14 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
 @Service
 public class ApplicationService {
     private final ApplicationRepository applicationRepository;
-    private final HashMap<Integer, Application> idempotencyPost = new HashMap<>();
+    private final ConcurrentHashMap<Integer, Application> idempotencyPost = new ConcurrentHashMap<>();
     private static final Logger LOGGER = Logger.getLogger(ApplicationService.class.getName());
-    private final Object lock = new Object();
 
     public ApplicationService(ApplicationRepository applicationRepository){
         this.applicationRepository = applicationRepository;
