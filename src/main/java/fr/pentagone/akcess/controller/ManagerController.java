@@ -1,7 +1,6 @@
 package fr.pentagone.akcess.controller;
 
-import fr.pentagone.akcess.dto.CredentialsDTO;
-import fr.pentagone.akcess.dto.TokenDTO;
+import fr.pentagone.akcess.dto.*;
 import fr.pentagone.akcess.service.ManagerService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +18,14 @@ public class ManagerController {
 
     @PostMapping("/auth")
     public ResponseEntity<TokenDTO> akcessManager(@RequestBody CredentialsDTO credentialsDTO){
-        LOGGER.info("check...");
+        LOGGER.info("check access to a manager");
         return managerService.verify(credentialsDTO.login(), credentialsDTO.password());
+    }
+
+
+    @PostMapping
+    public ResponseEntity<ManagerOutputDTO> create(@RequestBody ManagerInputDTO managerInputDTO) {
+        LOGGER.info("Create a manager : " + managerInputDTO.username());
+        return managerService.create(managerInputDTO);
     }
 }

@@ -1,10 +1,13 @@
 package fr.pentagone.akcess.service;
 
+import fr.pentagone.akcess.dto.ManagerInputDTO;
+import fr.pentagone.akcess.dto.ManagerOutputDTO;
 import fr.pentagone.akcess.dto.TokenDTO;
 import fr.pentagone.akcess.repository.sql.Manager;
 import fr.pentagone.akcess.repository.sql.ManagerRepository;
 import fr.pentagone.akcess.service.session.SessionManager;
 import fr.pentagone.akcess.service.session.TokenManager;
+import jakarta.transaction.Transactional;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -52,5 +55,13 @@ public class ManagerService {
             else return badRequest().build();
         }
         return badRequest().build();
+    }
+
+    @Transactional
+    public ResponseEntity<ManagerOutputDTO> create(ManagerInputDTO managerInputDTO) {
+        var password = passwordEncoder.encode(managerInputDTO.credentials().password());
+        var manager = new Manager(managerInputDTO.username(), managerInputDTO.credentials().login(), password);
+        var managerSaved = managerRepository.save(manager);
+        return ResponseEntity.ok(new ManagerOutputDTO(managerSaved.getId(), managerSaved.getName()));
     }
 }
