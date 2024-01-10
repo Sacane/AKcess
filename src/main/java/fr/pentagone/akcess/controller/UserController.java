@@ -1,7 +1,6 @@
 package fr.pentagone.akcess.controller;
 
-import fr.pentagone.akcess.dto.UserIdDTO;
-import fr.pentagone.akcess.dto.UserInputDTO;
+import fr.pentagone.akcess.dto.*;
 import fr.pentagone.akcess.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -38,9 +37,10 @@ public class UserController {
         return userService.getUserInfo(userId);
     }
 
-    @PostMapping("/{applicationId}/acces")
-    public ResponseEntity<String> checkAcces(@PathVariable int applicationId){
-        return userService.checkAccess(applicationId);
+    @PostMapping("/application/{applicationId}/auth")
+    public ResponseEntity<UserIdTokenDTO> checkAcces(@PathVariable int applicationId, @RequestBody CredentialsDTO credentialsDTO){
+        return userService.checkAccess(applicationId, credentialsDTO);
     }
-
 }
+
+// admin / admin

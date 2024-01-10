@@ -1,12 +1,11 @@
 package fr.pentagone.akcess.service;
 
-import fr.pentagone.akcess.dto.UserDTO;
-import fr.pentagone.akcess.dto.UserIdDTO;
-import fr.pentagone.akcess.dto.UserInputDTO;
+import fr.pentagone.akcess.dto.*;
 import fr.pentagone.akcess.exception.HttpException;
 import fr.pentagone.akcess.repository.sql.ApplicationRepository;
 import fr.pentagone.akcess.repository.sql.User;
 import fr.pentagone.akcess.repository.sql.UserRepository;
+import fr.pentagone.akcess.service.session.TokenManager;
 import jakarta.transaction.Transactional;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,11 +19,13 @@ public class UserService{
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final ApplicationRepository applicationRepository;
+    private final TokenManager tokenManager;
 
-    public UserService(UserRepository repository, PasswordEncoder passwordEncoder, ApplicationRepository applicationRepository){
+    public UserService(UserRepository repository, PasswordEncoder passwordEncoder, ApplicationRepository applicationRepository, TokenManager tokenManager){
         this.userRepository = repository;
         this.passwordEncoder = passwordEncoder;
         this.applicationRepository = applicationRepository;
+        this.tokenManager = tokenManager;
     }
 
     public ResponseEntity<String> deleteUser(int userId){
@@ -37,10 +38,24 @@ public class UserService{
         throw HttpException.badRequest("User not found");
     }
 
-    public ResponseEntity<String> checkAccess(int applicationId){
-        var optApp = applicationRepository.findById(applicationId);
-        if(optApp.isEmpty()) throw HttpException.badRequest("Application not found");
-        return ResponseEntity.ok("Acces granted");
+    public ResponseEntity<UserIdTokenDTO> checkAccess(int applicationId, CredentialsDTO credentialsDTO){
+        var optApp = applicationRepository.findByIdWithUsers(applicationId);
+        if(optApp.isEmpty()) {
+            LOGGER.severe("Application not found");
+            throw HttpException.notFound("Application not found");
+        }
+        var appUsers = optApp.get().getUsers();
+        var userOpt = appUsers.stream().filter(u -> u.getLogin().equals(credentialsDTO.login())).findFirst();
+        if(userOpt.isEmpty()) {
+            LOGGER.severe("User not found");
+            throw HttpException.notFound("The user " + credentialsDTO.login() + " not found");
+        }
+        var user = userOpt.get();
+        var token = tokenManager.generateJwtToken(user.getId());
+        if(passwordEncoder.verify(credentialsDTO.password(), user.getPassword())) {
+            return ResponseEntity.ok(new UserIdTokenDTO(user.getId(), user.getUsername(), token.accessToken()));
+        }
+        throw HttpException.forbidden("Bad credentials");
     }
 
     @Transactional

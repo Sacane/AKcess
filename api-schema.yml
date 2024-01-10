@@ -260,7 +260,7 @@ paths:
           description: The applicationId does not exists
       security:
         - bearer: []
-  /v1/users/application/{applicationId}/access:
+  /v1/users/application/{applicationId}/auth:
     post:
       tags:
         - User
